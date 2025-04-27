@@ -11,7 +11,7 @@
 
 ## Styling
 1. Use Tailwind CSS for styling components
-2. Follow the design system colors defined in tailwind.config.js
+2. Follow the design system colors defined in tailwind.config.ts
 3. Maintain consistent spacing and sizing across components
 4. Use the defined border-radius values for consistency
 5. Ensure all components work in both light and dark mode
