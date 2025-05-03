@@ -1,8 +1,8 @@
 'use server';
 
 import { cache } from 'react';
-import Airtable from 'airtable';
-import { Base, FieldSet, Record } from 'airtable';
+import { Record, FieldSet } from 'airtable';
+import { fetchAirtableData } from '@/lib/airtable-connection';
 import { mockBacklinks } from '@/lib/mock-data/mock-backlinks';
 
 // Define Backlink type based on the Airtable response structure
@@ -49,18 +49,6 @@ interface AirtableBacklinkFields extends FieldSet {
   'Notes'?: string;
 }
 
-// Environment variables for Airtable
-const apiKey = process.env.AIRTABLE_API_KEY || process.env.NEXT_PUBLIC_AIRTABLE_API_KEY;
-const baseId = process.env.AIRTABLE_BASE_ID || process.env.NEXT_PUBLIC_AIRTABLE_BASE_ID;
-const hasAirtableCredentials = !!(apiKey && baseId);
-
-// Initialize Airtable base connection if credentials exist
-let airtableBase: Base | undefined;
-if (hasAirtableCredentials) {
-  const airtable = new Airtable({ apiKey });
-  airtableBase = airtable.base(baseId!);
-}
-
 // Type-safe mapping function
 const mapRecordToBacklink = (record: Record<AirtableBacklinkFields>): Backlink => ({
   id: record.id,
@@ -84,34 +72,9 @@ const mapRecordToBacklink = (record: Record<AirtableBacklinkFields>): Backlink =
 
 // Cache the result to prevent unnecessary API calls
 export const getBacklinkData = cache(async (): Promise<Backlink[]> => {
-  // If Airtable credentials are not available, return mock data
-  if (!hasAirtableCredentials || !airtableBase) {
-    console.log('Using mock backlink data (no Airtable credentials)');
-    return mockBacklinks;
-  }
-
-  // Use mock data if explicitly enabled through env vars
-  const shouldUseMockData = process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true';
-  if (shouldUseMockData) {
-    console.log('Using mock backlink data (mock data enabled)');
-    return mockBacklinks;
-  }
-
-  try {
-    console.log('Fetching backlinks from Airtable...');
-
-    // Fetch backlink records from Airtable with proper typing
-    // We need to cast the result since Airtable's types aren't perfect
-    const records = await airtableBase('Backlinks').select().all();
-    const typedRecords = records as unknown as Record<AirtableBacklinkFields>[];
-
-    console.log(`Successfully fetched ${typedRecords.length} backlink records from Airtable`);
-
-    // Map records directly to our Backlink type
-    return typedRecords.map(mapRecordToBacklink);
-  } catch (error) {
-    console.error('Error fetching backlinks from Airtable:', error);
-    console.log('Falling back to mock backlink data');
-    return mockBacklinks;
-  }
+  return fetchAirtableData<Backlink, AirtableBacklinkFields>(
+    'Backlinks',
+    mockBacklinks,
+    mapRecordToBacklink
+  );
 });

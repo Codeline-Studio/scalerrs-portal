@@ -1,65 +1,13 @@
 'use server';
 
 import { cache } from 'react';
+import { Record, FieldSet } from 'airtable';
+import { fetchAirtableData } from '@/lib/airtable-connection';
+import { mockURLData } from '@/lib/mock-data/mock-url-data';
 
-export const getUrlData = cache(async () => {
-  return [
-    {
-      id: 1,
-      url: '/blog/seo-strategy-2024',
-      title: 'SEO Strategy Guide for 2024',
-      currentRank: 8,
-      targetRank: 3,
-      traffic: 1250,
-      conversion: '2.4%',
-      status: 'Optimizing'
-    },
-    {
-      id: 2,
-      url: '/services/technical-seo',
-      title: 'Technical SEO Services',
-      currentRank: 12,
-      targetRank: 5,
-      traffic: 850,
-      conversion: '3.1%',
-      status: 'Monitoring'
-    },
-    {
-      id: 3,
-      url: '/case-studies/ecommerce-seo',
-      title: 'E-commerce SEO Case Study',
-      currentRank: 6,
-      targetRank: 1,
-      traffic: 1450,
-      conversion: '4.2%',
-      status: 'Optimizing'
-    },
-    {
-      id: 4,
-      url: '/blog/local-seo-guide',
-      title: 'Complete Local SEO Guide',
-      currentRank: 15,
-      targetRank: 7,
-      traffic: 720,
-      conversion: '1.8%',
-      status: 'Planned'
-    },
-    {
-      id: 5,
-      url: '/services/content-marketing',
-      title: 'Content Marketing Services',
-      currentRank: 9,
-      targetRank: 3,
-      traffic: 980,
-      conversion: '2.9%',
-      status: 'Optimizing'
-    },
-  ];
-});
-
-
-export type UrlData = {
-  id: number;
+// Define the URL data type based on our application needs
+export interface UrlData {
+  id: string;
   url: string;
   title: string;
   currentRank: number;
@@ -68,3 +16,41 @@ export type UrlData = {
   conversion: string;
   status: string;
 }
+
+// Define the exact structure of the Airtable fields
+interface AirtableUrlFields extends FieldSet {
+  'URL Path'?: string;
+  'Title'?: string;
+  'Current Rank'?: number;
+  'Target Rank'?: number;
+  'Traffic'?: number;
+  'Clicks Last Month'?: number;
+  'Conversion Rate'?: number;
+  'Status'?: string;
+  'Base URL'?: string;
+  'Full URL'?: string;
+  'Page Type (Main)'?: string;
+  'Country'?: string;
+  'Client'?: string | string[];
+}
+
+// Type-safe mapping function
+const mapRecordToUrlData = (record: Record<AirtableUrlFields>): UrlData => ({
+  id: record.id,
+  url: record.get('URL Path') || '',
+  title: record.get('Title') || '',
+  currentRank: record.get('Current Rank') || 0,
+  targetRank: record.get('Target Rank') || 0,
+  traffic: record.get('Traffic') || record.get('Clicks Last Month') || 0,
+  conversion: `${record.get('Conversion Rate') || 0}%`,
+  status: record.get('Status') || 'Pending'
+});
+
+// Cache the result to prevent unnecessary API calls
+export const getUrlData = cache(async (): Promise<UrlData[]> => {
+  return fetchAirtableData<UrlData, AirtableUrlFields>(
+    'URL Performance',
+    mockURLData,
+    mapRecordToUrlData
+  );
+});
