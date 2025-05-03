@@ -1,4 +1,4 @@
-import Airtable, {Base, FieldSet, Record} from 'airtable';
+import Airtable, { Base, FieldSet, Record } from 'airtable';
 
 // Environment variables and connection state interface
 interface AirtableConnection {
@@ -13,8 +13,10 @@ interface AirtableConnection {
  */
 export function getAirtableBase(): AirtableConnection {
   // Environment variables for Airtable
-  const apiKey = process.env.AIRTABLE_API_KEY || process.env.NEXT_PUBLIC_AIRTABLE_API_KEY;
-  const baseId = process.env.AIRTABLE_BASE_ID || process.env.NEXT_PUBLIC_AIRTABLE_BASE_ID;
+  const apiKey =
+    process.env.AIRTABLE_API_KEY || process.env.NEXT_PUBLIC_AIRTABLE_API_KEY;
+  const baseId =
+    process.env.AIRTABLE_BASE_ID || process.env.NEXT_PUBLIC_AIRTABLE_BASE_ID;
   const hasAirtableCredentials = !!(apiKey && baseId);
 
   // Determine if we should use mock data
@@ -50,7 +52,8 @@ export async function fetchAirtableData<T, F extends FieldSet>(
   mockData: T[],
   mapFunction: (record: Record<F>) => T | Promise<T>
 ): Promise<T[]> {
-  const { hasAirtableCredentials, airtableBase, shouldUseMockData } = getAirtableBase();
+  const { hasAirtableCredentials, airtableBase, shouldUseMockData } =
+    getAirtableBase();
 
   // If Airtable credentials are not available, return mock data
   if (!hasAirtableCredentials || !airtableBase) {
@@ -69,7 +72,9 @@ export async function fetchAirtableData<T, F extends FieldSet>(
 
     // Fetch records from Airtable
     const records = await airtableBase(tableName).select().all();
-    console.log(`Successfully fetched ${records.length} ${tableName} records from Airtable`);
+    console.log(
+      `Successfully fetched ${records.length} ${tableName} records from Airtable`
+    );
 
     // Map records to our data type with proper typing
     const typedRecords = records as unknown as Record<F>[];

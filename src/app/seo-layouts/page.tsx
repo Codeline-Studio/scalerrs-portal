@@ -13,9 +13,9 @@ import { TabName, SearchParams, TabItem } from './components/types';
 export default async function SEOLayoutsPage({
   searchParams,
 }: {
-  searchParams?: SearchParams | Promise<SearchParams>;
+  searchParams?: Promise<SearchParams> | undefined;
 }) {
-  const resolvedSearchParams = await searchParams || {};
+  const resolvedSearchParams = await (searchParams || Promise.resolve<SearchParams>({}));
   const activeTab = (resolvedSearchParams.tab || 'urls') as TabName;
 
   const tabs: TabItem[] = [

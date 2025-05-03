@@ -29,7 +29,7 @@ export interface Backlink {
 // Define the exact structure of the Airtable fields based on provided example
 interface AirtableBacklinkFields extends FieldSet {
   'Backlink Name'?: string;
-  'Client'?: string[];
+  Client?: string[];
   'Source Domain'?: string;
   'Target URL'?: string[];
   'Domain Authority/Rating'?: number;
@@ -38,21 +38,24 @@ interface AirtableBacklinkFields extends FieldSet {
   'Page Traffic'?: number;
   'Referring Domains to Page'?: number;
   'Link Type'?: string;
-  'Status'?: string;
+  Status?: string;
   'Went Live On'?: string;
-  'Month'?: string;
+  Month?: string;
   'Anchor Text'?: string;
   'Secondary Anchor Text'?: string;
-  'Cost'?: number;
+  Cost?: number;
   'Payment Status'?: string;
   'Person Responsible'?: string;
-  'Notes'?: string;
+  Notes?: string;
 }
 
 // Type-safe mapping function
-const mapRecordToBacklink = (record: Record<AirtableBacklinkFields>): Backlink => ({
+const mapRecordToBacklink = (
+  record: Record<AirtableBacklinkFields>
+): Backlink => ({
   id: record.id,
-  targetUrl: record.get('Target URL')?.[0] || record.get('Page URL') || '/unknown',
+  targetUrl:
+    record.get('Target URL')?.[0] || record.get('Page URL') || '/unknown',
   sourceDomain: record.get('Source Domain') || '',
   domainRating: record.get('Domain Authority/Rating') || 0,
   linkType: record.get('Link Type') || '',

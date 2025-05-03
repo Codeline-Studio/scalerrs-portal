@@ -20,18 +20,18 @@ export interface UrlData {
 // Define the exact structure of the Airtable fields
 interface AirtableUrlFields extends FieldSet {
   'URL Path'?: string;
-  'Title'?: string;
+  Title?: string;
   'Current Rank'?: number;
   'Target Rank'?: number;
-  'Traffic'?: number;
+  Traffic?: number;
   'Clicks Last Month'?: number;
   'Conversion Rate'?: number;
-  'Status'?: string;
+  Status?: string;
   'Base URL'?: string;
   'Full URL'?: string;
   'Page Type (Main)'?: string;
-  'Country'?: string;
-  'Client'?: string | string[];
+  Country?: string;
+  Client?: string | string[];
 }
 
 // Type-safe mapping function
@@ -43,7 +43,7 @@ const mapRecordToUrlData = (record: Record<AirtableUrlFields>): UrlData => ({
   targetRank: record.get('Target Rank') || 0,
   traffic: record.get('Traffic') || record.get('Clicks Last Month') || 0,
   conversion: `${record.get('Conversion Rate') || 0}%`,
-  status: record.get('Status') || 'Pending'
+  status: record.get('Status') || 'Pending',
 });
 
 // Cache the result to prevent unnecessary API calls

@@ -18,14 +18,14 @@ export interface KeywordData {
 
 // Define the exact structure of the Airtable fields
 interface AirtableKeywordFields extends FieldSet {
-  'Keyword'?: string;
-  'Client'?: string[];
+  Keyword?: string;
+  Client?: string[];
   'Target Page'?: string[] | string;
   'Search Volume'?: number;
-  'Difficulty'?: number;
+  Difficulty?: number;
   'Current Rank'?: number;
   'Target Rank'?: number;
-  'Status'?: string;
+  Status?: string;
 }
 
 // Define structure for URL Performance data
@@ -39,34 +39,36 @@ interface UrlPageField extends FieldSet {
 }
 
 // Cache the URL Performance data to avoid repeated API calls
-export const getUrlPerformanceData = cache(async (): Promise<Map<string, string>> => {
-  const urlPageMap = new Map<string, string>();
+export const getUrlPerformanceData = cache(
+  async (): Promise<Map<string, string>> => {
+    const urlPageMap = new Map<string, string>();
 
-  try {
-    const urlData = await fetchAirtableData<UrlPageData, UrlPageField>(
-      'URL Performance',
-      [],
-      (rec: Record<UrlPageField>): UrlPageData => {
-        return {
-          id: rec.id,
-          urlPath: rec.get('URL Path') || ''
-        };
-      }
-    );
+    try {
+      const urlData = await fetchAirtableData<UrlPageData, UrlPageField>(
+        'URL Performance',
+        [],
+        (rec: Record<UrlPageField>): UrlPageData => {
+          return {
+            id: rec.id,
+            urlPath: rec.get('URL Path') || '',
+          };
+        }
+      );
 
-    urlData.forEach(item => {
-      if (item.urlPath) {
-        urlPageMap.set(item.id, item.urlPath);
-      }
-    });
+      urlData.forEach((item) => {
+        if (item.urlPath) {
+          urlPageMap.set(item.id, item.urlPath);
+        }
+      });
 
-    console.log(`Cached ${urlPageMap.size} URL paths for quick lookup`);
-  } catch (error) {
-    console.error('Error fetching URL Performance data:', error);
+      console.log(`Cached ${urlPageMap.size} URL paths for quick lookup`);
+    } catch (error) {
+      console.error('Error fetching URL Performance data:', error);
+    }
+
+    return urlPageMap;
   }
-
-  return urlPageMap;
-});
+);
 
 // Type-safe mapping function that uses the pre-fetched URL data
 const mapRecordToKeywordData = (
