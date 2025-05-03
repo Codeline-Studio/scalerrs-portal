@@ -5,9 +5,9 @@ import { fetchMonthlyProjections } from '@/lib/client-api'
 import { MonthlyProjection } from '@/types'
 
 // Status Badge Component
-function StatusBadge({ status }: { status: string }) {
-  let bgColor = ''
-  let textColor = ''
+function StatusBadge ({ status }: { status: string }) {
+  let bgColor: string
+  let textColor: string
 
   switch (status) {
     case 'On Track':
@@ -28,13 +28,14 @@ function StatusBadge({ status }: { status: string }) {
   }
 
   return (
-    <span className={`px-2 py-1 text-xs font-medium rounded-full ${bgColor} ${textColor}`}>
+    <span
+      className={`px-2 py-1 text-xs font-medium rounded-full ${bgColor} ${textColor}`}>
       {status}
     </span>
   )
 }
 
-export default function MonthlyProjectionsBoard() {
+export default function MonthlyProjectionsBoard () {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [projections, setProjections] = useState<MonthlyProjection[]>([])
@@ -44,11 +45,11 @@ export default function MonthlyProjectionsBoard() {
       try {
         setLoading(true)
         setError(null)
-        
+
         console.log('Fetching monthly projections data...')
         const data = await fetchMonthlyProjections()
         console.log('Monthly projections data fetched:', data)
-        
+
         setProjections(data)
       } catch (err: any) {
         console.error('Error fetching monthly projections:', err)
@@ -75,7 +76,9 @@ export default function MonthlyProjectionsBoard() {
   }
 
   return (
-    <div className="card bg-white rounded-scalerrs border border-lightGray overflow-hidden" style={{ color: '#353233' }}>
+    <div
+      className="card bg-white rounded-scalerrs border border-lightGray overflow-hidden"
+      style={{ color: '#353233' }}>
       {/* Summary header */}
       <div className="bg-lightGray p-3 border-b border-lightGray">
         <p className="text-sm font-medium text-text-light dark:text-text-dark">
@@ -85,7 +88,8 @@ export default function MonthlyProjectionsBoard() {
 
       {loading ? (
         <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+          <div
+            className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
         </div>
       ) : error ? (
         <div className="p-4 text-red-700">
@@ -95,54 +99,75 @@ export default function MonthlyProjectionsBoard() {
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
-              <tr className="bg-lightGray/50 border-b border-lightGray">
-                <th className="px-4 py-3 text-left text-xs font-medium text-mediumGray dark:text-gray-300 uppercase tracking-wider">Month</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-mediumGray dark:text-gray-300 uppercase tracking-wider">Current Trajectory</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-mediumGray dark:text-gray-300 uppercase tracking-wider">Target</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-mediumGray dark:text-gray-300 uppercase tracking-wider">Required Trajectory</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-mediumGray dark:text-gray-300 uppercase tracking-wider">Gap to Close</th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-mediumGray dark:text-gray-300 uppercase tracking-wider">Status</th>
-              </tr>
+            <tr className="bg-lightGray/50 border-b border-lightGray">
+              <th
+                className="px-4 py-3 text-left text-xs font-medium text-mediumGray dark:text-gray-300 uppercase tracking-wider">Month
+              </th>
+              <th
+                className="px-4 py-3 text-left text-xs font-medium text-mediumGray dark:text-gray-300 uppercase tracking-wider">Current
+                Trajectory
+              </th>
+              <th
+                className="px-4 py-3 text-left text-xs font-medium text-mediumGray dark:text-gray-300 uppercase tracking-wider">Target
+              </th>
+              <th
+                className="px-4 py-3 text-left text-xs font-medium text-mediumGray dark:text-gray-300 uppercase tracking-wider">Required
+                Trajectory
+              </th>
+              <th
+                className="px-4 py-3 text-left text-xs font-medium text-mediumGray dark:text-gray-300 uppercase tracking-wider">Gap
+                to Close
+              </th>
+              <th
+                className="px-4 py-3 text-left text-xs font-medium text-mediumGray dark:text-gray-300 uppercase tracking-wider">Status
+              </th>
+            </tr>
             </thead>
             <tbody className="divide-y divide-lightGray">
-              {projections.length > 0 ? (
-                projections.map((projection, index) => {
-                  const current = projection['Current Trajectory'] || 0
-                  const target = projection['KPI Goal/Target'] || 0
-                  const required = projection['Required Trajectory'] || 0
-                  const status = getStatus(current, target)
-                  const gap = getGap(current, target)
-                  
-                  return (
-                    <tr key={index} className="hover:bg-lightGray/20">
-                      <td className="px-4 py-3 text-sm text-text-light dark:text-text-dark">
-                        {projection.Month} {projection.Year}
-                      </td>
-                      <td className="px-4 py-3 text-sm text-text-light dark:text-text-dark">
-                        {current.toLocaleString()}
-                      </td>
-                      <td className="px-4 py-3 text-sm text-text-light dark:text-text-dark">
-                        {target.toLocaleString()}
-                      </td>
-                      <td className="px-4 py-3 text-sm text-text-light dark:text-text-dark">
-                        {required.toLocaleString()}
-                      </td>
-                      <td className="px-4 py-3 text-sm text-text-light dark:text-text-dark">
-                        {gap}%
-                      </td>
-                      <td className="px-4 py-3 text-sm">
-                        <StatusBadge status={status} />
-                      </td>
-                    </tr>
-                  )
-                })
-              ) : (
-                <tr>
-                  <td colSpan={6} className="px-4 py-8 text-center text-sm text-mediumGray">
-                    No projections found
-                  </td>
-                </tr>
-              )}
+            {projections.length > 0 ? (
+              projections.map((projection, index) => {
+                const current = projection['Current Trajectory'] || 0
+                const target = projection['KPI Goal/Target'] || 0
+                const required = projection['Required Trajectory'] || 0
+                const status = getStatus(current, target)
+                const gap = getGap(current, target)
+
+                return (
+                  <tr key={index} className="hover:bg-lightGray/20">
+                    <td
+                      className="px-4 py-3 text-sm text-text-light dark:text-text-dark">
+                      {projection.Month} {projection.Year}
+                    </td>
+                    <td
+                      className="px-4 py-3 text-sm text-text-light dark:text-text-dark">
+                      {current.toLocaleString()}
+                    </td>
+                    <td
+                      className="px-4 py-3 text-sm text-text-light dark:text-text-dark">
+                      {target.toLocaleString()}
+                    </td>
+                    <td
+                      className="px-4 py-3 text-sm text-text-light dark:text-text-dark">
+                      {required.toLocaleString()}
+                    </td>
+                    <td
+                      className="px-4 py-3 text-sm text-text-light dark:text-text-dark">
+                      {gap}%
+                    </td>
+                    <td className="px-4 py-3 text-sm">
+                      <StatusBadge status={status}/>
+                    </td>
+                  </tr>
+                )
+              })
+            ) : (
+              <tr>
+                <td colSpan={6}
+                    className="px-4 py-8 text-center text-sm text-mediumGray">
+                  No projections found
+                </td>
+              </tr>
+            )}
             </tbody>
           </table>
         </div>

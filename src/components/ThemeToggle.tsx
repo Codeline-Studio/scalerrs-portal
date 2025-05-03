@@ -1,51 +1,54 @@
-'use client';
+'use client'
 
-import { useTheme } from 'next-themes';
-import { useEffect, useState } from 'react';
+import { useTheme } from 'next-themes'
+import { useEffect, useState } from 'react'
+import { Button } from '@/components/ui/button'
 
-export default function ThemeToggle() {
-  const { resolvedTheme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
+export default function ThemeToggle () {
+  const { resolvedTheme, setTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
 
   // After mounting, we can safely show the UI
   useEffect(() => {
-    setMounted(true);
-  }, []);
+    setMounted(true)
+  }, [])
 
   // Force theme update on toggle
   const toggleTheme = () => {
-    const newTheme = resolvedTheme === 'dark' ? 'light' : 'dark';
-    setTheme(newTheme);
+    const newTheme = resolvedTheme === 'dark' ? 'light' : 'dark'
+    setTheme(newTheme)
 
     // Force the class on the document element
     if (newTheme === 'dark') {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('theme', 'dark');
-      localStorage.setItem('scalerrs-theme', 'dark');
+      document.documentElement.classList.add('dark')
+      localStorage.setItem('theme', 'dark')
+      localStorage.setItem('scalerrs-theme', 'dark')
     } else {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('theme', 'light');
-      localStorage.setItem('scalerrs-theme', 'light');
+      document.documentElement.classList.remove('dark')
+      localStorage.setItem('theme', 'light')
+      localStorage.setItem('scalerrs-theme', 'light')
     }
-  };
+  }
 
   if (!mounted) {
     // Return a placeholder with the same dimensions to avoid layout shift
     return (
-      <button
+      <Button
         className="flex items-center justify-center w-10 h-10 rounded-lg bg-lightGray border border-lightGray transition-colors"
         aria-label="Loading theme toggle"
       >
         <span className="sr-only">Loading theme toggle</span>
-      </button>
-    );
+      </Button>
+    )
   }
 
   return (
-    <button
+    <Button
       onClick={toggleTheme}
       className="flex items-center justify-center w-10 h-10 rounded-lg bg-lightGray dark:bg-sidebar-active border border-lightGray dark:border-sidebar-border transition-colors hover:bg-gray-200 dark:hover:bg-gray-800"
-      aria-label={`Switch to ${resolvedTheme === 'dark' ? 'light' : 'dark'} mode`}
+      aria-label={`Switch to ${resolvedTheme === 'dark'
+        ? 'light'
+        : 'dark'} mode`}
     >
       {resolvedTheme === 'dark' ? (
         <svg
@@ -78,6 +81,6 @@ export default function ThemeToggle() {
           />
         </svg>
       )}
-    </button>
-  );
+    </Button>
+  )
 }

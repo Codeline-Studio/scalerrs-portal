@@ -1,8 +1,8 @@
-'use client';
+'use client'
 
-import React, { ReactNode } from 'react';
-import Card from './Card';
-import FileTypeBadge from '../badges/FileTypeBadge';
+import React, { ReactNode } from 'react'
+import Card from './Card'
+import FileTypeBadge from '../badges/FileTypeBadge'
 
 export type Document = {
   id: number;
@@ -24,23 +24,25 @@ type DocumentCardProps = {
 /**
  * A card component for displaying document information
  */
-export default function DocumentCard({
+export default function DocumentCard ({
   document,
   className = '',
   children,
   onView,
-  onDownload
+  onDownload,
 }: DocumentCardProps) {
   return (
     <Card className={className}>
       <div className="flex justify-between items-start mb-3">
-        <h3 className="text-md font-medium text-text-light dark:text-text-dark">{document.name}</h3>
-        <FileTypeBadge type={document.type} />
+        <h3
+          className="text-md font-medium text-text-light dark:text-text-dark">{document.name}</h3>
+        <FileTypeBadge type={document.type}/>
       </div>
 
       <div className="grid grid-cols-2 gap-2 mb-4">
         <div className="text-sm text-mediumGray dark:text-gray-300">
-          <span className="font-medium">Updated:</span> {new Date(document.lastUpdated).toLocaleDateString()}
+          <span className="font-medium">Updated:</span> {new Date(
+          document.lastUpdated).toLocaleDateString()}
         </div>
 
         <div className="text-sm text-mediumGray dark:text-gray-300">
@@ -57,19 +59,19 @@ export default function DocumentCard({
       {children}
 
       <div className="flex space-x-2 mt-3">
-        <button
+        <Button
           onClick={() => onView && onView(document.id)}
           className="px-3 py-1 text-xs font-medium text-primary border border-primary rounded-scalerrs hover:bg-primary/10 transition-colors"
         >
           View
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={() => onDownload && onDownload(document.id)}
           className="px-3 py-1 text-xs font-medium text-white bg-primary rounded-scalerrs hover:bg-primary/80 transition-colors"
         >
           Download
-        </button>
+        </Button>
       </div>
     </Card>
-  );
+  )
 }

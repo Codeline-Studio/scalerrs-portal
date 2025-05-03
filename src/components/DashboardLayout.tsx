@@ -1,45 +1,39 @@
-'use client';
+'use client'
+import Sidebar from './Sidebar'
+import TopNavBar from './TopNavBar'
 
-import { useState, useEffect } from 'react';
-import Sidebar from './Sidebar';
-import TopNavBar from './TopNavBar';
-import ProtectedRoute from './ProtectedRoute';
-import PageWrapper from './PageWrapper';
-import { usePathname } from 'next/navigation';
+import PageWrapper from './PageWrapper'
 
-export default function DashboardLayout({
-  children,
+import { User } from '@/auth'
+import { useAppContext } from '@/context/AppContext'
+import React from 'react'
+
+export default function DashboardLayout ({
+  children, user,
 }: {
   children: React.ReactNode;
+  user: User
 }) {
-  const [sidebarExpanded, setSidebarExpanded] = useState(true);
-  const pathname = usePathname();
-  const isHomePage = pathname === '/home';
-
-  // Listen for changes in sidebar state
-  useEffect(() => {
-    const handleSidebarChange = (e: CustomEvent) => {
-      setSidebarExpanded(e.detail.expanded);
-    };
-
-    window.addEventListener('sidebarToggle' as any, handleSidebarChange);
-
-    return () => {
-      window.removeEventListener('sidebarToggle' as any, handleSidebarChange);
-    };
-  }, []);
+  const { isSidebarExpanded, isHomepage } = useAppContext()
 
   return (
-    <ProtectedRoute>
-      <div className="flex min-h-screen bg-lightGray dark:bg-dark">
-        <Sidebar />
-        {isHomePage && <TopNavBar sidebarExpanded={sidebarExpanded} />}
-        <div className={`flex-1 ${isHomePage ? 'pt-20' : 'pt-0'} transition-all duration-300 ${sidebarExpanded ? 'ml-64' : 'ml-20'}`}>
-          <PageWrapper>
-            {children}
-          </PageWrapper>
-        </div>
+
+    <div className="flex min-h-screen bg-lightGray dark:bg-dark">
+
+      <Sidebar user={user}/>
+
+      {isHomepage &&
+        <TopNavBar user={user} sidebarExpanded={isSidebarExpanded}/>}
+      <div className={`flex-1 ${isHomepage
+        ? 'pt-20'
+        : 'pt-0'} transition-all duration-300 ${isSidebarExpanded
+        ? 'ml-64'
+        : 'ml-20'}`}>
+        <PageWrapper>
+          {children}
+        </PageWrapper>
       </div>
-    </ProtectedRoute>
-  );
+    </div>
+
+  )
 }

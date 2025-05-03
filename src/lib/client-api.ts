@@ -9,71 +9,72 @@ import {
   mockKPIMetrics,
   mockURLPerformance,
   mockKeywordPerformance,
-  mockMonthlyProjections
-} from '@/lib/mock-data';
+  mockMonthlyProjections,
+} from '@/lib/mock-data'
 
 // Check if we're in a browser environment
-const isBrowser = typeof window !== 'undefined';
+const isBrowser = typeof window !== 'undefined'
 
 // Function to determine if we should use mock data
 // This happens if explicitly enabled or if API calls fail
 const shouldUseMockData = () => {
-  if (!isBrowser) return false;
+  if (!isBrowser) return false
 
   // Check if mock data is explicitly enabled
   // Try both the NEXT_PUBLIC_ version and the one from next.config.js
   const useMockData =
     process.env.NEXT_PUBLIC_USE_MOCK_DATA === 'true' ||
-    (typeof window !== 'undefined' && (window as any).env?.NEXT_PUBLIC_USE_MOCK_DATA === 'true');
+    (typeof window !== 'undefined' &&
+      (window as any).env?.NEXT_PUBLIC_USE_MOCK_DATA === 'true')
 
   // Check if we're on Netlify and having issues with Airtable
   const isNetlifyWithAirtableIssues =
     isNetlify() &&
-    localStorage.getItem('airtable-connection-issues') === 'true';
+    localStorage.getItem('airtable-connection-issues') === 'true'
 
-  console.log('Environment mode:', process.env.NODE_ENV);
-  console.log('Using mock data:', useMockData || isNetlifyWithAirtableIssues);
+  console.log('Environment mode:', process.env.NODE_ENV)
+  console.log('Using mock data:', useMockData || isNetlifyWithAirtableIssues)
 
   // Use mock data if explicitly enabled or if we're on Netlify with Airtable issues
-  return useMockData || isNetlifyWithAirtableIssues;
-};
+  return useMockData || isNetlifyWithAirtableIssues
+}
 
 // Function to determine if we're on Netlify
 const isNetlify = () => {
-  if (!isBrowser) return false;
-  return window.location.hostname.includes('netlify.app');
-};
+  if (!isBrowser) return false
+  return window.location.hostname.includes('netlify.app')
+}
 
 // Tasks API
-export async function fetchTasks() {
+export async function fetchTasks () {
   // Use mock data if explicitly enabled
   if (shouldUseMockData()) {
-    console.log('Using mock tasks data');
-    return mockTasks;
+    console.log('Using mock tasks data')
+    return mockTasks
   }
 
   try {
     // In development, use direct Airtable access through the mock data
     // This bypasses the API routes which can be problematic in local development
     if (process.env.NODE_ENV === 'development') {
-      console.log('Development mode: Using direct Airtable access');
+      console.log('Development mode: Using direct Airtable access')
       // Import the getTasks function directly
-      const { getTasks } = await import('@/lib/airtable');
-      const tasks = await getTasks();
-      return tasks;
+      const { getTasks } = await import('@/lib/airtable')
+      const tasks = await getTasks()
+      return tasks
     }
 
     // In production, use the API routes
     // Use Netlify Functions when on Netlify
     const url = isNetlify()
       ? '/.netlify/functions/get-tasks'
-      : '/api/tasks';
+      : '/api/tasks'
 
-    console.log('Fetching tasks from:', url);
+    console.log('Fetching tasks from:', url)
 
     // Add a timeout to the fetch request
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout - increased for Airtable API
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 15000) // 15 second timeout - increased for Airtable API
 
     const response = await fetch(url, {
       signal: controller.signal,
@@ -81,80 +82,83 @@ export async function fetchTasks() {
         'Accept': 'application/json',
         'Cache-Control': 'no-cache',
       },
-    });
+    })
 
-    clearTimeout(timeoutId);
+    clearTimeout(timeoutId)
 
     if (!response.ok) {
-      console.error(`API request failed with status ${response.status}`);
+      console.error(`API request failed with status ${response.status}`)
       // Try to get more detailed error information
       try {
-        const errorData = await response.json();
-        console.error('API error response:', errorData);
-        throw new Error(`API request failed with status ${response.status}: ${JSON.stringify(errorData)}`);
+        const errorData = await response.json()
+        console.error('API error response:', errorData)
+        throw new Error(
+          `API request failed with status ${response.status}: ${JSON.stringify(
+            errorData)}`)
       } catch (parseError) {
         // If we can't parse the error response, just throw the status
-        throw new Error(`API request failed with status ${response.status}`);
+        throw new Error(`API request failed with status ${response.status}`)
       }
     }
 
-    const data = await response.json();
-    console.log('Tasks data received:', data);
+    const data = await response.json()
+    console.log('Tasks data received:', data)
 
     if (!data.tasks) {
-      console.error('No tasks found in response:', data);
-      throw new Error('No tasks found in response');
+      console.error('No tasks found in response:', data)
+      throw new Error('No tasks found in response')
     }
 
-    return data.tasks;
+    return data.tasks
   } catch (error) {
-    console.error('Error fetching tasks:', error);
+    console.error('Error fetching tasks:', error)
 
     // Set a flag in localStorage to indicate Airtable connection issues
     if (isNetlify() && isBrowser) {
-      console.log('Setting airtable-connection-issues flag in localStorage');
-      localStorage.setItem('airtable-connection-issues', 'true');
+      console.log('Setting airtable-connection-issues flag in localStorage')
+      localStorage.setItem('airtable-connection-issues', 'true')
     }
 
     // Fall back to mock data if the API call fails
-    console.log('Falling back to mock tasks data');
-    return mockTasks;
+    console.log('Falling back to mock tasks data')
+    return mockTasks
   }
 }
 
-export async function updateTaskStatus(taskId: string, status: string) {
+export async function updateTaskStatus (taskId: string, status: string) {
   // Use mock data if explicitly enabled
   if (shouldUseMockData()) {
-    console.log('Using mock data for updating task status:', taskId, status);
-    const task = mockTasks.find(t => t.id === taskId);
+    console.log('Using mock data for updating task status:', taskId, status)
+    const task = mockTasks.find(t => t.id === taskId)
     if (task) {
-      task.Status = status;
+      task.Status = status
     }
-    return task || { id: taskId, Status: status };
+    return task || { id: taskId, Status: status }
   }
 
   try {
     // In development, use direct Airtable access
     // This bypasses the API routes which can be problematic in local development
     if (process.env.NODE_ENV === 'development') {
-      console.log('Development mode: Using direct Airtable access for updating task');
+      console.log(
+        'Development mode: Using direct Airtable access for updating task')
       // Import the updateTaskStatus function directly
-      const { updateTaskStatus: updateAirtableTaskStatus } = await import('@/lib/airtable');
-      const updatedTask = await updateAirtableTaskStatus(taskId, status);
-      return updatedTask;
+      const { updateTaskStatus: updateAirtableTaskStatus } = await import('@/lib/airtable')
+      const updatedTask = await updateAirtableTaskStatus(taskId, status)
+      return updatedTask
     }
 
     // In production, use the API routes
     // Use Netlify Functions when on Netlify
     const url = isNetlify()
       ? '/.netlify/functions/update-task'
-      : '/api/tasks';
+      : '/api/tasks'
 
-    console.log('Updating task status at:', url);
+    console.log('Updating task status at:', url)
 
     // Add a timeout to the fetch request
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 5000) // 5 second timeout
 
     const response = await fetch(url, {
       method: 'PATCH',
@@ -164,138 +168,143 @@ export async function updateTaskStatus(taskId: string, status: string) {
       },
       body: JSON.stringify({ taskId, status }),
       signal: controller.signal,
-    });
+    })
 
-    clearTimeout(timeoutId);
+    clearTimeout(timeoutId)
 
     if (!response.ok) {
-      throw new Error(`API request failed with status ${response.status}`);
+      throw new Error(`API request failed with status ${response.status}`)
     }
 
-    const data = await response.json();
-    console.log('Task update response:', data);
-    return data.task;
+    const data = await response.json()
+    console.log('Task update response:', data)
+    return data.task
   } catch (error) {
-    console.error('Error updating task status:', error);
+    console.error('Error updating task status:', error)
     // Fall back to mock data
-    console.log('Falling back to mock data for updating task status');
-    const task = mockTasks.find(t => t.id === taskId);
+    console.log('Falling back to mock data for updating task status')
+    const task = mockTasks.find(t => t.id === taskId)
     if (task) {
-      task.Status = status;
+      task.Status = status
     }
-    return task || { id: taskId, Status: status };
+    return task || { id: taskId, Status: status }
   }
 }
 
 // Comments API
-export async function fetchComments(taskId: string) {
+export async function fetchComments (taskId: string) {
   // Use mock data if explicitly enabled
   if (shouldUseMockData()) {
-    console.log('Using mock comments data for task:', taskId);
-    return mockComments.filter(c => c.Task.includes(taskId));
+    console.log('Using mock comments data for task:', taskId)
+    return mockComments.filter(c => c.Task.includes(taskId))
   }
 
   try {
     // In development, use direct Airtable access
     // This bypasses the API routes which can be problematic in local development
     if (process.env.NODE_ENV === 'development') {
-      console.log('Development mode: Using direct Airtable access for comments');
+      console.log(
+        'Development mode: Using direct Airtable access for comments')
       // Import the getCommentsByTask function directly
-      const { getCommentsByTask } = await import('@/lib/airtable');
-      const comments = await getCommentsByTask(taskId);
-      console.log('Comments received directly from Airtable:', comments);
-      return comments;
+      const { getCommentsByTask } = await import('@/lib/airtable')
+      const comments = await getCommentsByTask(taskId)
+      console.log('Comments received directly from Airtable:', comments)
+      return comments
     }
 
     // In production, use the API routes
     // Use Netlify Functions when on Netlify
     const url = isNetlify()
       ? `/.netlify/functions/get-comments?taskId=${taskId}`
-      : `/api/comments?taskId=${taskId}`;
+      : `/api/comments?taskId=${taskId}`
 
-    console.log('Fetching comments from:', url);
+    console.log('Fetching comments from:', url)
 
     // Add a timeout to the fetch request
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 15000); // 15 second timeout - increased for Airtable API
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 15000) // 15 second timeout - increased for Airtable API
 
     const response = await fetch(url, {
       signal: controller.signal,
       headers: {
         'Accept': 'application/json',
       },
-    });
+    })
 
-    clearTimeout(timeoutId);
+    clearTimeout(timeoutId)
 
     if (!response.ok) {
       // Try to get more detailed error information
       try {
-        const errorData = await response.json();
-        console.error('API error response:', errorData);
-        throw new Error(`API request failed with status ${response.status}: ${JSON.stringify(errorData)}`);
+        const errorData = await response.json()
+        console.error('API error response:', errorData)
+        throw new Error(
+          `API request failed with status ${response.status}: ${JSON.stringify(
+            errorData)}`)
       } catch (parseError) {
         // If we can't parse the error response, just throw the status
-        throw new Error(`API request failed with status ${response.status}`);
+        throw new Error(`API request failed with status ${response.status}`)
       }
     }
 
-    const data = await response.json();
-    console.log('Comments data received:', data);
-    return data.comments;
+    const data = await response.json()
+    console.log('Comments data received:', data)
+    return data.comments
   } catch (error) {
-    console.error('Error fetching comments:', error);
+    console.error('Error fetching comments:', error)
 
     // Set a flag in localStorage to indicate Airtable connection issues
     if (isNetlify() && isBrowser) {
-      console.log('Setting airtable-connection-issues flag in localStorage');
-      localStorage.setItem('airtable-connection-issues', 'true');
+      console.log('Setting airtable-connection-issues flag in localStorage')
+      localStorage.setItem('airtable-connection-issues', 'true')
     }
 
     // Fall back to mock data
-    console.log('Falling back to mock comments data for task:', taskId);
-    return mockComments.filter(c => c.Task.includes(taskId));
+    console.log('Falling back to mock comments data for task:', taskId)
+    return mockComments.filter(c => c.Task.includes(taskId))
   }
 }
 
-export async function addComment(taskId: string, userId: string, comment: string) {
+export async function addComment (
+  taskId: string, userId: string, comment: string) {
   // Use mock data if explicitly enabled
   if (shouldUseMockData()) {
-    console.log('Using mock data for adding comment:', taskId, userId, comment);
+    console.log('Using mock data for adding comment:', taskId, userId, comment)
     const newComment = {
       id: `comment-${Date.now()}`,
       Title: `Comment on task ${taskId}`,
       Task: [taskId],
       User: [userId],
       Comment: comment,
-      CreatedAt: new Date().toISOString()
-    };
-    mockComments.push(newComment);
-    return newComment;
+      CreatedAt: new Date().toISOString(),
+    }
+    mockComments.push(newComment)
+    return newComment
   }
 
   try {
     // In development, use direct Airtable access
     // This bypasses the API routes which can be problematic in local development
     if (process.env.NODE_ENV === 'development') {
-      console.log('Development mode: Using direct Airtable access for adding comment');
+      console.log(
+        'Development mode: Using direct Airtable access for adding comment')
       // Import the addComment function directly
-      const { addComment: addAirtableComment } = await import('@/lib/airtable');
-      const newComment = await addAirtableComment(taskId, userId, comment);
-      return newComment;
+      const { addComment: addAirtableComment } = await import('@/lib/airtable')
+      const newComment = await addAirtableComment(taskId, userId, comment)
+      return newComment
     }
 
     // In production, use the API routes
     // Use Netlify Functions when on Netlify
     const url = isNetlify()
       ? '/.netlify/functions/add-comment'
-      : '/api/comments';
+      : '/api/comments'
 
-    console.log('Adding comment at:', url);
+    console.log('Adding comment at:', url)
 
     // Add a timeout to the fetch request
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 5000) // 5 second timeout
 
     const response = await fetch(url, {
       method: 'POST',
@@ -305,109 +314,60 @@ export async function addComment(taskId: string, userId: string, comment: string
       },
       body: JSON.stringify({ taskId, userId, comment }),
       signal: controller.signal,
-    });
+    })
 
-    clearTimeout(timeoutId);
+    clearTimeout(timeoutId)
 
     if (!response.ok) {
-      throw new Error(`API request failed with status ${response.status}`);
+      throw new Error(`API request failed with status ${response.status}`)
     }
 
-    const data = await response.json();
-    console.log('Comment added response:', data);
-    return data.comment;
+    const data = await response.json()
+    console.log('Comment added response:', data)
+    return data.comment
   } catch (error) {
-    console.error('Error adding comment:', error);
+    console.error('Error adding comment:', error)
     // Fall back to mock data
-    console.log('Falling back to mock data for adding comment');
+    console.log('Falling back to mock data for adding comment')
     const newComment = {
       id: `comment-${Date.now()}`,
       Title: `Comment on task ${taskId}`,
       Task: [taskId],
       User: [userId],
       Comment: comment,
-      CreatedAt: new Date().toISOString()
-    };
-    mockComments.push(newComment);
-    return newComment;
-  }
-}
-
-// Auth API
-export async function loginUser(email: string, password: string) {
-  // Use mock data if explicitly enabled
-  if (shouldUseMockData()) {
-    console.log('Using mock user data for login:', email);
-    const user = mockUsers.find(u => u.Email === email);
-    if (user) {
-      return { user };
+      CreatedAt: new Date().toISOString(),
     }
-    throw new Error('Invalid email or password');
-  }
-
-  try {
-    // For now, we'll just use mock data for authentication on Netlify
-    // In a real app, you'd create a Netlify Function for authentication
-    if (isNetlify()) {
-      console.log('Using mock user data for login on Netlify:', email);
-      const user = mockUsers.find(u => u.Email === email);
-      if (user) {
-        return { user };
-      }
-      throw new Error('Invalid email or password');
-    }
-
-    const response = await fetch('/api/auth', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email, password }),
-    });
-
-    if (!response.ok) {
-      throw new Error(`API request failed with status ${response.status}`);
-    }
-
-    return await response.json();
-  } catch (error) {
-    console.error('Error logging in:', error);
-    // Fall back to mock data
-    console.log('Falling back to mock user data for login:', email);
-    const user = mockUsers.find(u => u.Email === email);
-    if (user) {
-      return { user };
-    }
-    throw new Error('Invalid email or password');
+    mockComments.push(newComment)
+    return newComment
   }
 }
 
 // Briefs API
-export async function fetchBriefs() {
+export async function fetchBriefs () {
   // Use mock data if explicitly enabled
   if (shouldUseMockData()) {
-    console.log('Using mock briefs data');
-    return mockBriefs;
+    console.log('Using mock briefs data')
+    return mockBriefs
   }
 
   try {
     // In development, use direct Airtable access
     if (process.env.NODE_ENV === 'development') {
-      console.log('Development mode: Using direct Airtable access for briefs');
-      const { getBriefs } = await import('@/lib/airtable');
-      const briefs = await getBriefs();
-      return briefs;
+      console.log('Development mode: Using direct Airtable access for briefs')
+      const { getBriefs } = await import('@/lib/airtable')
+      const briefs = await getBriefs()
+      return briefs
     }
 
     // In production, use the API routes
     const url = isNetlify()
       ? '/.netlify/functions/get-briefs'
-      : '/api/briefs';
+      : '/api/briefs'
 
-    console.log('Fetching briefs from:', url);
+    console.log('Fetching briefs from:', url)
 
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 15000);
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 15000)
 
     const response = await fetch(url, {
       signal: controller.signal,
@@ -415,79 +375,81 @@ export async function fetchBriefs() {
         'Accept': 'application/json',
         'Cache-Control': 'no-cache',
       },
-    });
+    })
 
-    clearTimeout(timeoutId);
+    clearTimeout(timeoutId)
 
     if (!response.ok) {
-      throw new Error(`API request failed with status ${response.status}`);
+      throw new Error(`API request failed with status ${response.status}`)
     }
 
-    const data = await response.json();
-    console.log('Briefs data received:', data);
-    return data.briefs;
+    const data = await response.json()
+    console.log('Briefs data received:', data)
+    return data.briefs
   } catch (error) {
-    console.error('Error fetching briefs:', error);
+    console.error('Error fetching briefs:', error)
 
     // Set a flag in localStorage to indicate Airtable connection issues
     if (isNetlify() && isBrowser) {
-      localStorage.setItem('airtable-connection-issues', 'true');
+      localStorage.setItem('airtable-connection-issues', 'true')
     }
 
     // Fall back to mock data
-    console.log('Falling back to mock briefs data');
-    return mockBriefs;
+    console.log('Falling back to mock briefs data')
+    return mockBriefs
   }
 }
 
-export async function updateBriefStatus(briefId: string, status: string) {
+export async function updateBriefStatus (briefId: string, status: string) {
   // Use mock data if explicitly enabled
   if (shouldUseMockData()) {
-    console.log('Using mock data for updating brief status:', briefId, status);
-    const brief = mockBriefs.find(b => b.id === briefId);
+    console.log('Using mock data for updating brief status:', briefId, status)
+    const brief = mockBriefs.find(b => b.id === briefId)
     if (brief) {
-      brief.Status = status;
+      brief.Status = status
     }
-    return brief || { id: briefId, Status: status };
+    return brief || { id: briefId, Status: status }
   }
 
   try {
     // In development, use direct Airtable access
     if (process.env.NODE_ENV === 'development') {
-      console.log('Development mode: Using direct Airtable access for updating brief');
+      console.log(
+        'Development mode: Using direct Airtable access for updating brief')
       try {
-        const { updateBriefStatus: updateAirtableBriefStatus } = await import('@/lib/airtable');
-        const updatedBrief = await updateAirtableBriefStatus(briefId, status);
-        console.log('Successfully updated brief in Airtable:', updatedBrief);
-        return updatedBrief;
+        const { updateBriefStatus: updateAirtableBriefStatus } = await import('@/lib/airtable')
+        const updatedBrief = await updateAirtableBriefStatus(briefId, status)
+        console.log('Successfully updated brief in Airtable:', updatedBrief)
+        return updatedBrief
       } catch (airtableError) {
-        console.error('Error updating brief in Airtable:', airtableError);
+        console.error('Error updating brief in Airtable:', airtableError)
 
         // Set a flag in localStorage to indicate Airtable connection issues
         if (isBrowser) {
-          console.log('Setting airtable-connection-issues flag in localStorage');
-          localStorage.setItem('airtable-connection-issues', 'true');
+          console.log(
+            'Setting airtable-connection-issues flag in localStorage')
+          localStorage.setItem('airtable-connection-issues', 'true')
         }
 
         // Fall back to mock data
-        console.log('Falling back to mock data for updating brief status');
-        const brief = mockBriefs.find(b => b.id === briefId);
+        console.log('Falling back to mock data for updating brief status')
+        const brief = mockBriefs.find(b => b.id === briefId)
         if (brief) {
-          brief.Status = status;
+          brief.Status = status
         }
-        return brief || { id: briefId, Status: status };
+        return brief || { id: briefId, Status: status }
       }
     }
 
     // In production, use the API routes
     const url = isNetlify()
       ? '/.netlify/functions/update-brief'
-      : '/api/briefs';
+      : '/api/briefs'
 
-    console.log('Updating brief status at:', url);
+    console.log('Updating brief status at:', url)
 
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 10000); // Increased timeout to 10 seconds
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 10000) // Increased timeout to 10 seconds
 
     const response = await fetch(url, {
       method: 'PATCH',
@@ -497,64 +459,67 @@ export async function updateBriefStatus(briefId: string, status: string) {
       },
       body: JSON.stringify({ briefId, status }),
       signal: controller.signal,
-    });
+    })
 
-    clearTimeout(timeoutId);
+    clearTimeout(timeoutId)
 
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error(`API request failed with status ${response.status}:`, errorText);
-      throw new Error(`API request failed with status ${response.status}: ${errorText}`);
+      const errorText = await response.text()
+      console.error(`API request failed with status ${response.status}:`,
+        errorText)
+      throw new Error(
+        `API request failed with status ${response.status}: ${errorText}`)
     }
 
-    const data = await response.json();
-    console.log('Brief update response:', data);
-    return data.brief;
+    const data = await response.json()
+    console.log('Brief update response:', data)
+    return data.brief
   } catch (error) {
-    console.error('Error updating brief status:', error);
+    console.error('Error updating brief status:', error)
 
     // Set a flag in localStorage to indicate Airtable connection issues
     if (isBrowser) {
-      console.log('Setting airtable-connection-issues flag in localStorage');
-      localStorage.setItem('airtable-connection-issues', 'true');
+      console.log('Setting airtable-connection-issues flag in localStorage')
+      localStorage.setItem('airtable-connection-issues', 'true')
     }
 
     // Fall back to mock data
-    console.log('Falling back to mock data for updating brief status');
-    const brief = mockBriefs.find(b => b.id === briefId);
+    console.log('Falling back to mock data for updating brief status')
+    const brief = mockBriefs.find(b => b.id === briefId)
     if (brief) {
-      brief.Status = status;
+      brief.Status = status
     }
-    return brief || { id: briefId, Status: status };
+    return brief || { id: briefId, Status: status }
   }
 }
 
 // Articles API
-export async function fetchArticles() {
+export async function fetchArticles () {
   // Use mock data if explicitly enabled
   if (shouldUseMockData()) {
-    console.log('Using mock articles data');
-    return mockArticles;
+    console.log('Using mock articles data')
+    return mockArticles
   }
 
   try {
     // In development, use direct Airtable access
     if (process.env.NODE_ENV === 'development') {
-      console.log('Development mode: Using direct Airtable access for articles');
-      const { getArticles } = await import('@/lib/airtable');
-      const articles = await getArticles();
-      return articles;
+      console.log(
+        'Development mode: Using direct Airtable access for articles')
+      const { getArticles } = await import('@/lib/airtable')
+      const articles = await getArticles()
+      return articles
     }
 
     // In production, use the API routes
     const url = isNetlify()
       ? '/.netlify/functions/get-articles'
-      : '/api/articles';
+      : '/api/articles'
 
-    console.log('Fetching articles from:', url);
+    console.log('Fetching articles from:', url)
 
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 15000);
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 15000)
 
     const response = await fetch(url, {
       signal: controller.signal,
@@ -562,79 +527,84 @@ export async function fetchArticles() {
         'Accept': 'application/json',
         'Cache-Control': 'no-cache',
       },
-    });
+    })
 
-    clearTimeout(timeoutId);
+    clearTimeout(timeoutId)
 
     if (!response.ok) {
-      throw new Error(`API request failed with status ${response.status}`);
+      throw new Error(`API request failed with status ${response.status}`)
     }
 
-    const data = await response.json();
-    console.log('Articles data received:', data);
-    return data.articles;
+    const data = await response.json()
+    console.log('Articles data received:', data)
+    return data.articles
   } catch (error) {
-    console.error('Error fetching articles:', error);
+    console.error('Error fetching articles:', error)
 
     // Set a flag in localStorage to indicate Airtable connection issues
     if (isNetlify() && isBrowser) {
-      localStorage.setItem('airtable-connection-issues', 'true');
+      localStorage.setItem('airtable-connection-issues', 'true')
     }
 
     // Fall back to mock data
-    console.log('Falling back to mock articles data');
-    return mockArticles;
+    console.log('Falling back to mock articles data')
+    return mockArticles
   }
 }
 
-export async function updateArticleStatus(articleId: string, status: string) {
+export async function updateArticleStatus (articleId: string, status: string) {
   // Use mock data if explicitly enabled
   if (shouldUseMockData()) {
-    console.log('Using mock data for updating article status:', articleId, status);
-    const article = mockArticles.find(a => a.id === articleId);
+    console.log('Using mock data for updating article status:', articleId,
+      status)
+    const article = mockArticles.find(a => a.id === articleId)
     if (article) {
-      article.Status = status;
+      article.Status = status
     }
-    return article || { id: articleId, Status: status };
+    return article || { id: articleId, Status: status }
   }
 
   try {
     // In development, use direct Airtable access
     if (process.env.NODE_ENV === 'development') {
-      console.log('Development mode: Using direct Airtable access for updating article');
+      console.log(
+        'Development mode: Using direct Airtable access for updating article')
       try {
-        const { updateArticleStatus: updateAirtableArticleStatus } = await import('@/lib/airtable');
-        const updatedArticle = await updateAirtableArticleStatus(articleId, status);
-        console.log('Successfully updated article in Airtable:', updatedArticle);
-        return updatedArticle;
+        const { updateArticleStatus: updateAirtableArticleStatus } = await import('@/lib/airtable')
+        const updatedArticle = await updateAirtableArticleStatus(articleId,
+          status)
+        console.log('Successfully updated article in Airtable:',
+          updatedArticle)
+        return updatedArticle
       } catch (airtableError) {
-        console.error('Error updating article in Airtable:', airtableError);
+        console.error('Error updating article in Airtable:', airtableError)
 
         // Set a flag in localStorage to indicate Airtable connection issues
         if (isBrowser) {
-          console.log('Setting airtable-connection-issues flag in localStorage');
-          localStorage.setItem('airtable-connection-issues', 'true');
+          console.log(
+            'Setting airtable-connection-issues flag in localStorage')
+          localStorage.setItem('airtable-connection-issues', 'true')
         }
 
         // Fall back to mock data
-        console.log('Falling back to mock data for updating article status');
-        const article = mockArticles.find(a => a.id === articleId);
+        console.log('Falling back to mock data for updating article status')
+        const article = mockArticles.find(a => a.id === articleId)
         if (article) {
-          article.Status = status;
+          article.Status = status
         }
-        return article || { id: articleId, Status: status };
+        return article || { id: articleId, Status: status }
       }
     }
 
     // In production, use the API routes
     const url = isNetlify()
       ? '/.netlify/functions/update-article'
-      : '/api/articles';
+      : '/api/articles'
 
-    console.log('Updating article status at:', url);
+    console.log('Updating article status at:', url)
 
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 10000); // Increased timeout to 10 seconds
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 10000) // Increased timeout to 10 seconds
 
     const response = await fetch(url, {
       method: 'PATCH',
@@ -644,101 +614,106 @@ export async function updateArticleStatus(articleId: string, status: string) {
       },
       body: JSON.stringify({ articleId, status }),
       signal: controller.signal,
-    });
+    })
 
-    clearTimeout(timeoutId);
+    clearTimeout(timeoutId)
 
     if (!response.ok) {
-      const errorText = await response.text();
-      console.error(`API request failed with status ${response.status}:`, errorText);
-      throw new Error(`API request failed with status ${response.status}: ${errorText}`);
+      const errorText = await response.text()
+      console.error(`API request failed with status ${response.status}:`,
+        errorText)
+      throw new Error(
+        `API request failed with status ${response.status}: ${errorText}`)
     }
 
-    const data = await response.json();
-    console.log('Article update response:', data);
-    return data.article;
+    const data = await response.json()
+    console.log('Article update response:', data)
+    return data.article
   } catch (error) {
-    console.error('Error updating article status:', error);
+    console.error('Error updating article status:', error)
 
     // Set a flag in localStorage to indicate Airtable connection issues
     if (isBrowser) {
-      console.log('Setting airtable-connection-issues flag in localStorage');
-      localStorage.setItem('airtable-connection-issues', 'true');
+      console.log('Setting airtable-connection-issues flag in localStorage')
+      localStorage.setItem('airtable-connection-issues', 'true')
     }
 
     // Fall back to mock data
-    console.log('Falling back to mock data for updating article status');
-    const article = mockArticles.find(a => a.id === articleId);
+    console.log('Falling back to mock data for updating article status')
+    const article = mockArticles.find(a => a.id === articleId)
     if (article) {
-      article.Status = status;
+      article.Status = status
     }
-    return article || { id: articleId, Status: status };
+    return article || { id: articleId, Status: status }
   }
 }
 
 // Backlinks API
-export async function fetchBacklinks() {
+export async function fetchBacklinks () {
   // Use mock data if explicitly enabled
   if (shouldUseMockData()) {
-    console.log('Using mock backlinks data');
-    return mockBacklinks;
+    console.log('Using mock backlinks data')
+    return mockBacklinks
   }
 
   try {
     // In development, use direct Airtable access
     if (process.env.NODE_ENV === 'development') {
-      console.log('Development mode: Using direct Airtable access for backlinks');
+      console.log(
+        'Development mode: Using direct Airtable access for backlinks')
 
       // Check if we have the public environment variables
-      const publicApiKey = process.env.NEXT_PUBLIC_AIRTABLE_API_KEY;
-      const publicBaseId = process.env.NEXT_PUBLIC_AIRTABLE_BASE_ID;
+      const publicApiKey = process.env.NEXT_PUBLIC_AIRTABLE_API_KEY
+      const publicBaseId = process.env.NEXT_PUBLIC_AIRTABLE_BASE_ID
 
-      console.log('Public API Key exists:', !!publicApiKey);
-      console.log('Public Base ID exists:', !!publicBaseId);
+      console.log('Public API Key exists:', !!publicApiKey)
+      console.log('Public Base ID exists:', !!publicBaseId)
 
       // Import the getBacklinks function directly
-      const { getBacklinks } = await import('@/lib/airtable');
+      const { getBacklinks } = await import('@/lib/airtable')
 
       try {
-        const backlinks = await getBacklinks();
-        console.log('Backlinks fetched successfully, count:', backlinks.length);
+        const backlinks = await getBacklinks()
+        console.log('Backlinks fetched successfully, count:', backlinks.length)
 
         // Log the first backlink to see its structure
         if (backlinks.length > 0) {
-          console.log('First backlink:', backlinks[0]);
-          console.log('First backlink fields:', Object.keys(backlinks[0]));
+          console.log('First backlink:', backlinks[0])
+          console.log('First backlink fields:', Object.keys(backlinks[0]))
         }
 
-        return backlinks;
+        return backlinks
       } catch (airtableError: any) {
-        console.error('Error fetching directly from Airtable:', airtableError);
+        console.error('Error fetching directly from Airtable:', airtableError)
 
         // If we get an authorization error, fall back to mock data
-        if (airtableError.message && airtableError.message.includes('authorized')) {
-          console.error('Authorization error with Airtable. Check your API key and permissions.');
+        if (airtableError.message &&
+          airtableError.message.includes('authorized')) {
+          console.error(
+            'Authorization error with Airtable. Check your API key and permissions.')
 
           // Set a flag in localStorage to indicate Airtable connection issues
           if (isBrowser) {
-            localStorage.setItem('airtable-connection-issues', 'true');
+            localStorage.setItem('airtable-connection-issues', 'true')
           }
 
-          return mockBacklinks;
+          return mockBacklinks
         }
 
         // Re-throw other errors to be caught by the outer catch
-        throw airtableError;
+        throw airtableError
       }
     }
 
     // In production, use the API routes
     const url = isNetlify()
       ? '/.netlify/functions/get-backlinks'
-      : '/api/backlinks';
+      : '/api/backlinks'
 
-    console.log('Fetching backlinks from:', url);
+    console.log('Fetching backlinks from:', url)
 
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 15000);
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 15000)
 
     const response = await fetch(url, {
       signal: controller.signal,
@@ -746,60 +721,64 @@ export async function fetchBacklinks() {
         'Accept': 'application/json',
         'Cache-Control': 'no-cache',
       },
-    });
+    })
 
-    clearTimeout(timeoutId);
+    clearTimeout(timeoutId)
 
     if (!response.ok) {
-      throw new Error(`API request failed with status ${response.status}`);
+      throw new Error(`API request failed with status ${response.status}`)
     }
 
-    const data = await response.json();
-    console.log('Backlinks data received:', data);
-    return data.backlinks;
+    const data = await response.json()
+    console.log('Backlinks data received:', data)
+    return data.backlinks
   } catch (error) {
-    console.error('Error fetching backlinks:', error);
+    console.error('Error fetching backlinks:', error)
 
     // Set a flag in localStorage to indicate Airtable connection issues
     if (isBrowser) {
-      localStorage.setItem('airtable-connection-issues', 'true');
+      localStorage.setItem('airtable-connection-issues', 'true')
     }
 
     // Fall back to mock data
-    console.log('Falling back to mock backlinks data');
-    return mockBacklinks;
+    console.log('Falling back to mock backlinks data')
+    return mockBacklinks
   }
 }
 
-export async function updateBacklinkStatus(backlinkId: string, status: string) {
+export async function updateBacklinkStatus (
+  backlinkId: string, status: string) {
   // Use mock data if explicitly enabled
   if (shouldUseMockData()) {
-    console.log('Using mock data for updating backlink status:', backlinkId, status);
-    const backlink = mockBacklinks.find(b => b.id === backlinkId);
+    console.log('Using mock data for updating backlink status:', backlinkId,
+      status)
+    const backlink = mockBacklinks.find(b => b.id === backlinkId)
     if (backlink) {
-      backlink.Status = status;
+      backlink.Status = status
     }
-    return backlink || { id: backlinkId, Status: status };
+    return backlink || { id: backlinkId, Status: status }
   }
 
   try {
     // In development, use direct Airtable access
     if (process.env.NODE_ENV === 'development') {
-      console.log('Development mode: Using direct Airtable access for updating backlink');
-      const { updateBacklinkStatus: updateAirtableBacklinkStatus } = await import('@/lib/airtable');
-      const updatedBacklink = await updateAirtableBacklinkStatus(backlinkId, status);
-      return updatedBacklink;
+      console.log(
+        'Development mode: Using direct Airtable access for updating backlink')
+      const { updateBacklinkStatus: updateAirtableBacklinkStatus } = await import('@/lib/airtable')
+      const updatedBacklink = await updateAirtableBacklinkStatus(backlinkId,
+        status)
+      return updatedBacklink
     }
 
     // In production, use the API routes
     const url = isNetlify()
       ? '/.netlify/functions/update-backlink'
-      : '/api/backlinks';
+      : '/api/backlinks'
 
-    console.log('Updating backlink status at:', url);
+    console.log('Updating backlink status at:', url)
 
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 5000);
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 5000)
 
     const response = await fetch(url, {
       method: 'PATCH',
@@ -809,85 +788,88 @@ export async function updateBacklinkStatus(backlinkId: string, status: string) {
       },
       body: JSON.stringify({ backlinkId, status }),
       signal: controller.signal,
-    });
+    })
 
-    clearTimeout(timeoutId);
+    clearTimeout(timeoutId)
 
     if (!response.ok) {
-      throw new Error(`API request failed with status ${response.status}`);
+      throw new Error(`API request failed with status ${response.status}`)
     }
 
-    const data = await response.json();
-    console.log('Backlink update response:', data);
-    return data.backlink;
+    const data = await response.json()
+    console.log('Backlink update response:', data)
+    return data.backlink
   } catch (error) {
-    console.error('Error updating backlink status:', error);
+    console.error('Error updating backlink status:', error)
     // Fall back to mock data
-    console.log('Falling back to mock data for updating backlink status');
-    const backlink = mockBacklinks.find(b => b.id === backlinkId);
+    console.log('Falling back to mock data for updating backlink status')
+    const backlink = mockBacklinks.find(b => b.id === backlinkId)
     if (backlink) {
-      backlink.Status = status;
+      backlink.Status = status
     }
-    return backlink || { id: backlinkId, Status: status };
+    return backlink || { id: backlinkId, Status: status }
   }
 }
 
 // KPI Metrics API
-export async function fetchKPIMetrics() {
+export async function fetchKPIMetrics () {
   // Use mock data if explicitly enabled
   if (shouldUseMockData()) {
-    console.log('Using mock KPI metrics data');
-    return mockKPIMetrics;
+    console.log('Using mock KPI metrics data')
+    return mockKPIMetrics
   }
 
   try {
     // In development, use direct Airtable access
     if (process.env.NODE_ENV === 'development') {
-      console.log('Development mode: Using direct Airtable access for KPI metrics');
+      console.log(
+        'Development mode: Using direct Airtable access for KPI metrics')
 
       // Check if we have the public environment variables
-      const publicApiKey = process.env.NEXT_PUBLIC_AIRTABLE_API_KEY;
-      const publicBaseId = process.env.NEXT_PUBLIC_AIRTABLE_BASE_ID;
+      const publicApiKey = process.env.NEXT_PUBLIC_AIRTABLE_API_KEY
+      const publicBaseId = process.env.NEXT_PUBLIC_AIRTABLE_BASE_ID
 
-      console.log('Public API Key exists:', !!publicApiKey);
-      console.log('Public Base ID exists:', !!publicBaseId);
+      console.log('Public API Key exists:', !!publicApiKey)
+      console.log('Public Base ID exists:', !!publicBaseId)
 
       // Import the getKPIMetrics function directly
-      const { getKPIMetrics } = await import('@/lib/airtable');
+      const { getKPIMetrics } = await import('@/lib/airtable')
 
       try {
-        const kpiMetrics = await getKPIMetrics();
-        console.log('KPI metrics fetched successfully:', kpiMetrics);
-        return kpiMetrics;
+        const kpiMetrics = await getKPIMetrics()
+        console.log('KPI metrics fetched successfully:', kpiMetrics)
+        return kpiMetrics
       } catch (airtableError: any) {
-        console.error('Error fetching directly from Airtable:', airtableError);
+        console.error('Error fetching directly from Airtable:', airtableError)
 
         // If we get an authorization error, fall back to mock data
-        if (airtableError.message && airtableError.message.includes('authorized')) {
-          console.error('Authorization error with Airtable. Check your API key and permissions.');
+        if (airtableError.message &&
+          airtableError.message.includes('authorized')) {
+          console.error(
+            'Authorization error with Airtable. Check your API key and permissions.')
 
           // Set a flag in localStorage to indicate Airtable connection issues
           if (isBrowser) {
-            localStorage.setItem('airtable-connection-issues', 'true');
+            localStorage.setItem('airtable-connection-issues', 'true')
           }
 
-          return mockKPIMetrics;
+          return mockKPIMetrics
         }
 
         // Re-throw other errors to be caught by the outer catch
-        throw airtableError;
+        throw airtableError
       }
     }
 
     // In production, use the API routes
     const url = isNetlify()
       ? '/.netlify/functions/get-kpi-metrics'
-      : '/api/kpi-metrics';
+      : '/api/kpi-metrics'
 
-    console.log('Fetching KPI metrics from:', url);
+    console.log('Fetching KPI metrics from:', url)
 
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 15000);
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 15000)
 
     const response = await fetch(url, {
       signal: controller.signal,
@@ -895,87 +877,90 @@ export async function fetchKPIMetrics() {
         'Accept': 'application/json',
         'Cache-Control': 'no-cache',
       },
-    });
+    })
 
-    clearTimeout(timeoutId);
+    clearTimeout(timeoutId)
 
     if (!response.ok) {
-      throw new Error(`API request failed with status ${response.status}`);
+      throw new Error(`API request failed with status ${response.status}`)
     }
 
-    const data = await response.json();
-    console.log('KPI metrics data received:', data);
-    return data.kpiMetrics;
+    const data = await response.json()
+    console.log('KPI metrics data received:', data)
+    return data.kpiMetrics
   } catch (error) {
-    console.error('Error fetching KPI metrics:', error);
+    console.error('Error fetching KPI metrics:', error)
 
     // Set a flag in localStorage to indicate Airtable connection issues
     if (isBrowser) {
-      localStorage.setItem('airtable-connection-issues', 'true');
+      localStorage.setItem('airtable-connection-issues', 'true')
     }
 
     // Fall back to mock data
-    console.log('Falling back to mock KPI metrics data');
-    return mockKPIMetrics;
+    console.log('Falling back to mock KPI metrics data')
+    return mockKPIMetrics
   }
 }
 
 // URL Performance API
-export async function fetchURLPerformance() {
+export async function fetchURLPerformance () {
   // Use mock data if explicitly enabled
   if (shouldUseMockData()) {
-    console.log('Using mock URL performance data');
-    return mockURLPerformance;
+    console.log('Using mock URL performance data')
+    return mockURLPerformance
   }
 
   try {
     // In development, use direct Airtable access
     if (process.env.NODE_ENV === 'development') {
-      console.log('Development mode: Using direct Airtable access for URL performance');
+      console.log(
+        'Development mode: Using direct Airtable access for URL performance')
 
       // Check if we have the public environment variables
-      const publicApiKey = process.env.NEXT_PUBLIC_AIRTABLE_API_KEY;
-      const publicBaseId = process.env.NEXT_PUBLIC_AIRTABLE_BASE_ID;
+      const publicApiKey = process.env.NEXT_PUBLIC_AIRTABLE_API_KEY
+      const publicBaseId = process.env.NEXT_PUBLIC_AIRTABLE_BASE_ID
 
-      console.log('Public API Key exists:', !!publicApiKey);
-      console.log('Public Base ID exists:', !!publicBaseId);
+      console.log('Public API Key exists:', !!publicApiKey)
+      console.log('Public Base ID exists:', !!publicBaseId)
 
       // Import the getURLPerformance function directly
-      const { getURLPerformance } = await import('@/lib/airtable');
+      const { getURLPerformance } = await import('@/lib/airtable')
 
       try {
-        const urlPerformance = await getURLPerformance();
-        console.log('URL performance fetched successfully:', urlPerformance);
-        return urlPerformance;
+        const urlPerformance = await getURLPerformance()
+        console.log('URL performance fetched successfully:', urlPerformance)
+        return urlPerformance
       } catch (airtableError: any) {
-        console.error('Error fetching directly from Airtable:', airtableError);
+        console.error('Error fetching directly from Airtable:', airtableError)
 
         // If we get an authorization error, fall back to mock data
-        if (airtableError.message && airtableError.message.includes('authorized')) {
-          console.error('Authorization error with Airtable. Check your API key and permissions.');
+        if (airtableError.message &&
+          airtableError.message.includes('authorized')) {
+          console.error(
+            'Authorization error with Airtable. Check your API key and permissions.')
 
           // Set a flag in localStorage to indicate Airtable connection issues
           if (isBrowser) {
-            localStorage.setItem('airtable-connection-issues', 'true');
+            localStorage.setItem('airtable-connection-issues', 'true')
           }
 
-          return mockURLPerformance;
+          return mockURLPerformance
         }
 
         // Re-throw other errors to be caught by the outer catch
-        throw airtableError;
+        throw airtableError
       }
     }
 
     // In production, use the API routes
     const url = isNetlify()
       ? '/.netlify/functions/get-url-performance'
-      : '/api/url-performance';
+      : '/api/url-performance'
 
-    console.log('Fetching URL performance from:', url);
+    console.log('Fetching URL performance from:', url)
 
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 15000);
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 15000)
 
     const response = await fetch(url, {
       signal: controller.signal,
@@ -983,168 +968,179 @@ export async function fetchURLPerformance() {
         'Accept': 'application/json',
         'Cache-Control': 'no-cache',
       },
-    });
+    })
 
-    clearTimeout(timeoutId);
+    clearTimeout(timeoutId)
 
     if (!response.ok) {
-      throw new Error(`API request failed with status ${response.status}`);
+      throw new Error(`API request failed with status ${response.status}`)
     }
 
-    const data = await response.json();
-    console.log('URL performance data received:', data);
-    return data.urlPerformance;
+    const data = await response.json()
+    console.log('URL performance data received:', data)
+    return data.urlPerformance
   } catch (error) {
-    console.error('Error fetching URL performance:', error);
+    console.error('Error fetching URL performance:', error)
 
     // Set a flag in localStorage to indicate Airtable connection issues
     if (isBrowser) {
-      localStorage.setItem('airtable-connection-issues', 'true');
+      localStorage.setItem('airtable-connection-issues', 'true')
     }
 
     // Fall back to mock data
-    console.log('Falling back to mock URL performance data');
-    return mockURLPerformance;
+    console.log('Falling back to mock URL performance data')
+    return mockURLPerformance
   }
 }
 
 // Monthly Projections API
-export async function fetchMonthlyProjections() {
+export async function fetchMonthlyProjections () {
   // Use mock data if explicitly enabled
   if (shouldUseMockData()) {
-    console.log('Using mock monthly projections data');
-    return mockMonthlyProjections;
+    console.log('Using mock monthly projections data')
+    return mockMonthlyProjections
   }
 
   try {
     // Check if we're in a browser environment
-    const isBrowser = typeof window !== 'undefined';
+    const isBrowser = typeof window !== 'undefined'
 
     // In production, use Netlify Functions
     if (isBrowser && process.env.NODE_ENV === 'production') {
-      console.log('Fetching monthly projections from Netlify Function');
-      const response = await fetch('/.netlify/functions/get-monthly-projections');
+      console.log('Fetching monthly projections from Netlify Function')
+      const response = await fetch(
+        '/.netlify/functions/get-monthly-projections')
 
       if (!response.ok) {
-        throw new Error(`Failed to fetch monthly projections: ${response.status} ${response.statusText}`);
+        throw new Error(
+          `Failed to fetch monthly projections: ${response.status} ${response.statusText}`)
       }
 
-      const data = await response.json();
-      console.log('Monthly projections data received:', data);
-      return data.monthlyProjections;
+      const data = await response.json()
+      console.log('Monthly projections data received:', data)
+      return data.monthlyProjections
     }
 
     // In development, try to fetch directly from Airtable
     if (isBrowser && process.env.NODE_ENV === 'development') {
-      console.log('Fetching monthly projections directly from Airtable (development mode)');
+      console.log(
+        'Fetching monthly projections directly from Airtable (development mode)')
 
       try {
         // Import the getMonthlyProjections function directly
-        const { getMonthlyProjections } = await import('@/lib/airtable/index');
-        const monthlyProjections = await getMonthlyProjections();
-        console.log('Monthly projections fetched successfully:', monthlyProjections);
-        return monthlyProjections;
+        const { getMonthlyProjections } = await import('@/lib/airtable/index')
+        const monthlyProjections = await getMonthlyProjections()
+        console.log('Monthly projections fetched successfully:',
+          monthlyProjections)
+        return monthlyProjections
       } catch (airtableError: any) {
-        console.error('Error fetching directly from Airtable:', airtableError);
+        console.error('Error fetching directly from Airtable:', airtableError)
 
         // If we get an authorization error, fall back to mock data
-        if (airtableError.message && airtableError.message.includes('authorized')) {
-          console.error('Authorization error with Airtable. Check your API key and permissions.');
+        if (airtableError.message &&
+          airtableError.message.includes('authorized')) {
+          console.error(
+            'Authorization error with Airtable. Check your API key and permissions.')
 
           // Set a flag in localStorage to indicate Airtable connection issues
           if (isBrowser) {
-            localStorage.setItem('airtable-connection-issues', 'true');
+            localStorage.setItem('airtable-connection-issues', 'true')
           }
 
-          return mockMonthlyProjections;
+          return mockMonthlyProjections
         }
 
         // Re-throw other errors to be caught by the outer catch
-        throw airtableError;
+        throw airtableError
       }
     }
 
     // Server-side rendering or static generation
-    console.log('Fetching monthly projections from API route');
-    const response = await fetch('/api/monthly-projections');
+    console.log('Fetching monthly projections from API route')
+    const response = await fetch('/api/monthly-projections')
 
     if (!response.ok) {
-      throw new Error(`Failed to fetch monthly projections: ${response.status} ${response.statusText}`);
+      throw new Error(
+        `Failed to fetch monthly projections: ${response.status} ${response.statusText}`)
     }
 
-    const data = await response.json();
-    console.log('Monthly projections data received:', data);
-    return data.monthlyProjections;
+    const data = await response.json()
+    console.log('Monthly projections data received:', data)
+    return data.monthlyProjections
   } catch (error) {
-    console.error('Error fetching monthly projections:', error);
+    console.error('Error fetching monthly projections:', error)
 
     // Set a flag in localStorage to indicate Airtable connection issues
     if (typeof window !== 'undefined') {
-      localStorage.setItem('airtable-connection-issues', 'true');
+      localStorage.setItem('airtable-connection-issues', 'true')
     }
 
     // Fall back to mock data
-    console.log('Falling back to mock monthly projections data');
-    return mockMonthlyProjections;
+    console.log('Falling back to mock monthly projections data')
+    return mockMonthlyProjections
   }
 }
 
 // Keyword Performance API
-export async function fetchKeywordPerformance() {
+export async function fetchKeywordPerformance () {
   // Use mock data if explicitly enabled
   if (shouldUseMockData()) {
-    console.log('Using mock keyword performance data');
-    return mockKeywordPerformance;
+    console.log('Using mock keyword performance data')
+    return mockKeywordPerformance
   }
 
   try {
     // In development, use direct Airtable access
     if (process.env.NODE_ENV === 'development') {
-      console.log('Development mode: Using direct Airtable access for keyword performance');
+      console.log(
+        'Development mode: Using direct Airtable access for keyword performance')
 
       // Check if we have the public environment variables
-      const publicApiKey = process.env.NEXT_PUBLIC_AIRTABLE_API_KEY;
-      const publicBaseId = process.env.NEXT_PUBLIC_AIRTABLE_BASE_ID;
+      const publicApiKey = process.env.NEXT_PUBLIC_AIRTABLE_API_KEY
+      const publicBaseId = process.env.NEXT_PUBLIC_AIRTABLE_BASE_ID
 
-      console.log('Public API Key exists:', !!publicApiKey);
-      console.log('Public Base ID exists:', !!publicBaseId);
+      console.log('Public API Key exists:', !!publicApiKey)
+      console.log('Public Base ID exists:', !!publicBaseId)
 
       // Import the getKeywordPerformance function directly
-      const { getKeywordPerformance } = await import('@/lib/airtable');
+      const { getKeywordPerformance } = await import('@/lib/airtable')
 
       try {
-        const keywordPerformance = await getKeywordPerformance();
-        console.log('Keyword performance fetched successfully:', keywordPerformance);
-        return keywordPerformance;
+        const keywordPerformance = await getKeywordPerformance()
+        console.log('Keyword performance fetched successfully:',
+          keywordPerformance)
+        return keywordPerformance
       } catch (airtableError: any) {
-        console.error('Error fetching directly from Airtable:', airtableError);
+        console.error('Error fetching directly from Airtable:', airtableError)
 
         // If we get an authorization error, fall back to mock data
-        if (airtableError.message && airtableError.message.includes('authorized')) {
-          console.error('Authorization error with Airtable. Check your API key and permissions.');
+        if (airtableError.message &&
+          airtableError.message.includes('authorized')) {
+          console.error(
+            'Authorization error with Airtable. Check your API key and permissions.')
 
           // Set a flag in localStorage to indicate Airtable connection issues
           if (isBrowser) {
-            localStorage.setItem('airtable-connection-issues', 'true');
+            localStorage.setItem('airtable-connection-issues', 'true')
           }
 
-          return mockKeywordPerformance;
+          return mockKeywordPerformance
         }
 
         // Re-throw other errors to be caught by the outer catch
-        throw airtableError;
+        throw airtableError
       }
     }
 
     // In production, use the API routes
     const url = isNetlify()
       ? '/.netlify/functions/get-keyword-performance'
-      : '/api/keyword-performance';
+      : '/api/keyword-performance'
 
-    console.log('Fetching keyword performance from:', url);
+    console.log('Fetching keyword performance from:', url)
 
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 15000);
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 15000)
 
     const response = await fetch(url, {
       signal: controller.signal,
@@ -1152,27 +1148,27 @@ export async function fetchKeywordPerformance() {
         'Accept': 'application/json',
         'Cache-Control': 'no-cache',
       },
-    });
+    })
 
-    clearTimeout(timeoutId);
+    clearTimeout(timeoutId)
 
     if (!response.ok) {
-      throw new Error(`API request failed with status ${response.status}`);
+      throw new Error(`API request failed with status ${response.status}`)
     }
 
-    const data = await response.json();
-    console.log('Keyword performance data received:', data);
-    return data.keywordPerformance;
+    const data = await response.json()
+    console.log('Keyword performance data received:', data)
+    return data.keywordPerformance
   } catch (error) {
-    console.error('Error fetching keyword performance:', error);
+    console.error('Error fetching keyword performance:', error)
 
     // Set a flag in localStorage to indicate Airtable connection issues
     if (isBrowser) {
-      localStorage.setItem('airtable-connection-issues', 'true');
+      localStorage.setItem('airtable-connection-issues', 'true')
     }
 
     // Fall back to mock data
-    console.log('Falling back to mock keyword performance data');
-    return mockKeywordPerformance;
+    console.log('Falling back to mock keyword performance data')
+    return mockKeywordPerformance
   }
 }

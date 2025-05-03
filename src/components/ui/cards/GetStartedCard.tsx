@@ -1,7 +1,7 @@
-'use client';
+'use client'
 
-import React from 'react';
-import { cn } from '@/lib/utils';
+import React from 'react'
+import { cn } from '@/lib/utils'
 
 interface GetStartedCardProps {
   title: string;
@@ -14,7 +14,7 @@ interface GetStartedCardProps {
   className?: string;
 }
 
-export default function GetStartedCard({
+export default function GetStartedCard ({
   title,
   bgColor,
   buttonText,
@@ -27,8 +27,8 @@ export default function GetStartedCard({
   return (
     <div
       className={cn(
-        "card flex flex-col p-6 rounded-lg h-full min-h-[280px] bg-white shadow-sm",
-        className
+        'card flex flex-col p-6 rounded-lg h-full min-h-[280px] bg-white shadow-sm',
+        className,
       )}
       style={{ color: '#353233' }}
     >
@@ -41,27 +41,27 @@ export default function GetStartedCard({
         <p className="text-gray-600 mb-6 flex-grow">{description}</p>
       )}
 
-      <button
+      <Button
         onClick={onClick}
         className={cn(
-          "px-6 py-3 rounded-md transition-colors w-full text-center",
-          `bg-white hover:bg-opacity-90`
+          'px-6 py-3 rounded-md transition-colors w-full text-center',
+          `bg-white hover:bg-opacity-90`,
         )}
         style={{
           color: 'var(--brand-1)',
           borderWidth: '1.5px',
           borderStyle: 'solid',
           borderColor: 'var(--brand-1)',
-          height: '48px'
+          height: '48px',
         }}
       >
         {buttonText}
-      </button>
+      </Button>
     </div>
-  );
+  )
 }
 
-export function GuideCard({
+export function GuideCard ({
   title,
   bgColor,
   items,
@@ -85,15 +85,19 @@ export function GuideCard({
   return (
     <div
       className={cn(
-        "card p-6 rounded-lg h-full min-h-[280px] flex flex-col bg-white shadow-sm",
-        className
+        'card p-6 rounded-lg h-full min-h-[280px] flex flex-col bg-white shadow-sm',
+        className,
       )}
       style={{ color: '#353233' }}
     >
       <div className="flex items-start mb-4">
-        <div className="w-12 h-12 bg-[#e8eeff] rounded-full flex items-center justify-center">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-[#9ea8fb]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+        <div
+          className="w-12 h-12 bg-[#e8eeff] rounded-full flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg"
+               className="h-6 w-6 text-[#9ea8fb]" fill="none"
+               viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                  d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
           </svg>
         </div>
         <h2 className="text-xl font-semibold ml-3">{title}</h2>
@@ -106,7 +110,9 @@ export function GuideCard({
       <div className="space-y-4 flex-grow">
         {items.map((item, index) => (
           <div key={index} className="flex items-center">
-            <div className={cn("w-8 h-8 rounded flex items-center justify-center mr-3", item.bgColor)}>
+            <div className={cn(
+              'w-8 h-8 rounded flex items-center justify-center mr-3',
+              item.bgColor)}>
               {item.icon}
             </div>
             <span>{item.text}</span>
@@ -114,28 +120,28 @@ export function GuideCard({
         ))}
       </div>
       {buttonText && (
-        <button
+        <Button
           onClick={onClick}
           className={cn(
-            "px-6 py-3 rounded-md transition-colors w-full text-center mt-4",
-            `bg-white hover:bg-opacity-90`
+            'px-6 py-3 rounded-md transition-colors w-full text-center mt-4',
+            `bg-white hover:bg-opacity-90`,
           )}
           style={{
             color: 'var(--brand-1)',
             borderWidth: '1.5px',
             borderStyle: 'solid',
             borderColor: 'var(--brand-1)',
-            height: '48px'
+            height: '48px',
           }}
         >
           {buttonText}
-        </button>
+        </Button>
       )}
     </div>
-  );
+  )
 }
 
-export function QuickLinksCard({
+export function QuickLinksCard ({
   title,
   bgColor,
   links,
@@ -153,9 +159,9 @@ export function QuickLinksCard({
   return (
     <div
       className={cn(
-        "card p-6 rounded-lg h-full min-h-[280px]",
+        'card p-6 rounded-lg h-full min-h-[280px]',
         bgColor,
-        className
+        className,
       )}
       style={{ color: '#353233' }}
     >
@@ -165,12 +171,12 @@ export function QuickLinksCard({
           <a
             key={index}
             href={link.href}
-            target={link.isExternal ? "_blank" : undefined}
-            rel={link.isExternal ? "noopener noreferrer" : undefined}
+            target={link.isExternal ? '_blank' : undefined}
+            rel={link.isExternal ? 'noopener noreferrer' : undefined}
             className="flex items-center justify-center"
           >
             {typeof link.icon === 'string' ? (
-              <img src={link.icon} alt="" className="h-12 w-12" />
+              <img src={link.icon} alt="" className="h-12 w-12"/>
             ) : (
               link.icon
             )}
@@ -178,10 +184,10 @@ export function QuickLinksCard({
         ))}
       </div>
     </div>
-  );
+  )
 }
 
-export function ChecklistCard({
+export function ChecklistCard ({
   title,
   bgColor,
   completedTasks,
@@ -200,20 +206,24 @@ export function ChecklistCard({
   onClick?: () => void;
   className?: string;
 }) {
-  const progress = (completedTasks / totalTasks) * 100;
+  const progress = (completedTasks / totalTasks) * 100
 
   return (
     <div
       className={cn(
-        "card p-6 rounded-lg h-full min-h-[280px] flex flex-col bg-white shadow-sm",
-        className
+        'card p-6 rounded-lg h-full min-h-[280px] flex flex-col bg-white shadow-sm',
+        className,
       )}
       style={{ color: '#353233' }}
     >
       <div className="flex items-start mb-4">
-        <div className="w-12 h-12 bg-[#e8eeff] rounded-full flex items-center justify-center">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-[#9ea8fb]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+        <div
+          className="w-12 h-12 bg-[#e8eeff] rounded-full flex items-center justify-center">
+          <svg xmlns="http://www.w3.org/2000/svg"
+               className="h-6 w-6 text-[#9ea8fb]" fill="none"
+               viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                  d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
           </svg>
         </div>
         <h2 className="text-xl font-semibold ml-3">{title}</h2>
@@ -249,28 +259,29 @@ export function ChecklistCard({
               transform="rotate(-90 50 50)"
             />
           </svg>
-          <div className="absolute inset-0 flex items-center justify-center text-xl font-bold">
+          <div
+            className="absolute inset-0 flex items-center justify-center text-xl font-bold">
             {completedTasks}/{totalTasks}
           </div>
         </div>
       </div>
 
-      <button
+      <Button
         onClick={onClick}
         className={cn(
-          "px-6 py-3 rounded-md transition-colors w-full text-center",
-          `bg-white hover:bg-opacity-90`
+          'px-6 py-3 rounded-md transition-colors w-full text-center',
+          `bg-white hover:bg-opacity-90`,
         )}
         style={{
           color: 'var(--brand-1)',
           borderWidth: '1.5px',
           borderStyle: 'solid',
           borderColor: 'var(--brand-1)',
-          height: '48px'
+          height: '48px',
         }}
       >
         {buttonText}
-      </button>
+      </Button>
     </div>
-  );
+  )
 }

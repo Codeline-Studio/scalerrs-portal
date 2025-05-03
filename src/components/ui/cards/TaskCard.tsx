@@ -1,9 +1,10 @@
-'use client';
+'use client'
 
-import React from 'react';
-import Card from './Card';
-import StatusBadge, { TaskStatus } from '../badges/StatusBadge';
-import PriorityBadge, { TaskPriority } from '../badges/PriorityBadge';
+import React from 'react'
+import Card from './Card'
+import StatusBadge, { TaskStatus } from '../badges/StatusBadge'
+import PriorityBadge, { TaskPriority } from '../badges/PriorityBadge'
+import { Button } from '@/components/ui/button'
 
 export type Task = {
   id: number;
@@ -29,18 +30,19 @@ type TaskCardProps = {
 /**
  * A card component for displaying task information
  */
-export default function TaskCard({
+export default function TaskCard ({
   task,
   className = '',
   onEdit,
   onDelete,
-  onStatusChange
+  onStatusChange,
 }: TaskCardProps) {
   return (
     <Card className={`${className}`}>
       <div className="flex justify-between items-start mb-3">
-        <h3 className="text-md font-medium text-text-light dark:text-text-dark">{task.name}</h3>
-        <StatusBadge status={task.status} />
+        <h3
+          className="text-md font-medium text-text-light dark:text-text-dark">{task.name}</h3>
+        <StatusBadge status={task.status}/>
       </div>
 
       <div className="space-y-2 mb-4">
@@ -49,12 +51,14 @@ export default function TaskCard({
         </div>
 
         <div className="text-sm text-mediumGray dark:text-gray-300">
-          <span className="font-medium">Due:</span> {new Date(task.dueDate).toLocaleDateString()}
+          <span className="font-medium">Due:</span> {new Date(
+          task.dueDate).toLocaleDateString()}
         </div>
 
         <div className="flex items-center space-x-2">
-          <span className="text-sm font-medium text-mediumGray dark:text-gray-300">Priority:</span>
-          <PriorityBadge priority={task.priority} />
+          <span
+            className="text-sm font-medium text-mediumGray dark:text-gray-300">Priority:</span>
+          <PriorityBadge priority={task.priority}/>
         </div>
 
         <div className="grid grid-cols-2 gap-2">
@@ -76,25 +80,26 @@ export default function TaskCard({
 
       <div className="flex justify-between items-center">
         <div className="flex space-x-2">
-          <button
+          <Button
             onClick={() => onEdit && onEdit(task.id)}
             className="px-3 py-1 text-xs font-medium text-primary border border-primary rounded-scalerrs hover:bg-primary/10 transition-colors"
           >
             Edit
-          </button>
-          <button
+          </Button>
+          <Button
             onClick={() => onDelete && onDelete(task.id)}
             className="px-3 py-1 text-xs font-medium text-red-600 border border-red-600 rounded-scalerrs hover:bg-red-50 transition-colors"
           >
             Delete
-          </button>
+          </Button>
         </div>
 
         {onStatusChange && (
           <select
             className="text-xs border border-lightGray dark:border-container rounded-scalerrs p-1 focus:outline-none focus:ring-1 focus:ring-primary dark:bg-darkGray dark:text-gray-300"
             value={task.status}
-            onChange={(e) => onStatusChange(task.id, e.target.value as TaskStatus)}
+            onChange={(e) => onStatusChange(task.id,
+              e.target.value as TaskStatus)}
           >
             <option value="Not Started">Not Started</option>
             <option value="In Progress">In Progress</option>
@@ -104,5 +109,5 @@ export default function TaskCard({
         )}
       </div>
     </Card>
-  );
+  )
 }

@@ -1,9 +1,9 @@
-'use client';
+'use client'
 
-import React from 'react';
-import Card from './Card';
-import AccessBadge from '../badges/AccessBadge';
-import { AccessLevel } from '../badges/AccessBadge';
+import React from 'react'
+import Card from './Card'
+import AccessBadge from '../badges/AccessBadge'
+import { AccessLevel } from '../badges/AccessBadge'
 
 export type TeamMember = {
   id: number;
@@ -24,16 +24,17 @@ type TeamMemberCardProps = {
 /**
  * A card component for displaying team member information
  */
-export default function TeamMemberCard({
+export default function TeamMemberCard ({
   member,
   className = '',
-  onEdit
+  onEdit,
 }: TeamMemberCardProps) {
   return (
     <Card className={className}>
       <div className="flex justify-between items-start mb-3">
-        <h3 className="text-md font-medium text-text-light dark:text-text-dark">{member.name}</h3>
-        <AccessBadge access={member.access} />
+        <h3
+          className="text-md font-medium text-text-light dark:text-text-dark">{member.name}</h3>
+        <AccessBadge access={member.access}/>
       </div>
 
       <div className="space-y-2 mb-4">
@@ -51,13 +52,13 @@ export default function TeamMemberCard({
       </div>
 
       <div className="flex space-x-2">
-        <button
+        <Button
           onClick={() => onEdit && onEdit(member.id)}
           className="px-3 py-1 text-xs font-medium text-primary border border-primary rounded-scalerrs hover:bg-primary/10 transition-colors"
         >
           Edit Access
-        </button>
+        </Button>
       </div>
     </Card>
-  );
+  )
 }
