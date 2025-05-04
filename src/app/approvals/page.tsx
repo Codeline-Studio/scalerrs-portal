@@ -14,15 +14,15 @@ import { getApprovalItems, getPendingCounts } from '@/actions/approvals';
 import { TabItem } from './components/tab-navigation-client';
 
 type ApprovalTabName = 'keywords' | 'briefs' | 'articles' | 'backlinks' | 'quickwins';
-type SearchParams = { tab?: string };
 
 export default async function ApprovalsPage({
   searchParams,
 }: {
-  searchParams?: SearchParams | undefined;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   // Get the active tab from the URL parameters, defaulting to 'briefs'
-  const activeTab = (searchParams?.tab || 'briefs') as ApprovalTabName;
+  const resolvedSearchParams = await searchParams;
+  const activeTab = ((resolvedSearchParams?.tab as string) || 'briefs') as ApprovalTabName;
 
   // Fetch approval items for summary counts
   const approvalItems = await getApprovalItems();
