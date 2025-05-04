@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import ApprovalTable from './approval-table';
-import { getApprovalItems, ApprovalItems } from '@/actions/approvals';
+import { getApprovalItems, ApprovalItems, ApprovalItem } from '@/actions/approvals';
 
 interface BaseTabContentProps {
-  items: any[];
+  items: ApprovalItem[];
   categoryKey: keyof ApprovalItems;
 }
 
