@@ -1,7 +1,10 @@
 import Link from 'next/link'
 
-export default function Home () {
-  
+import { getDeliverables } from '@/actions/deliverables'
+
+export default async function Home () {
+  const articles = await getDeliverables()
+  console.log(JSON.stringify(articles, null, 2))
   return (
     <>
       <div className="space-y-4">

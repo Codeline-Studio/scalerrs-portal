@@ -39,10 +39,7 @@ module.exports = {
         'sidebar-hover': 'rgba(154, 168, 251, 0.1)',
         'sidebar-active-border': '#9EA8FB',
       },
-      fontFamily: {
-        sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
-        roboto: ['Roboto', 'sans-serif'],
-      },
+      
       borderRadius: {
         'scalerrs': '16px',
         'DEFAULT': '8px',

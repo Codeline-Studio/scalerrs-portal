@@ -37,7 +37,7 @@ export default async function RootLayout ({
   const user = await getUser()
   return (
     <html lang="en"
-          className={`${inter.className}`}>
+          className={`${roboto.className}`}>
     <body
       className="bg-white text-text-light blue-glow-top-left blue-glow-bottom-right"
     >

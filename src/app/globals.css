@@ -1,533 +1,536 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
-
-:root {
-    /* Base theme colors from Figma */
-    --primary: oklch(0.205 0 0); /* periwinkle blue */
-    --brand-1: #9EA8FB;
-    --brand-2: #99A9FF;
-    --brand-accent: #EADCFF;
-    --brand-yellow: #FFE4A6;
-
-    /* Light mode */ /* Specific light mode text color */
-    --container-bg: #FFFFFF;
-    --container-border: #F5F5F9;
-
-    /* Grays */
-    --light-gray: #F5F5F9;
-    --medium-gray: #4F515E;
-    --dark-gray: #181D27;
-    --dark: #12131C;
-
-    /* Card colors */
-    --card-yellow: #FFF9DB;
-    --card-blue: #E8EAF6;
-    --card-purple: #EDE7F6;
-
-    /* UI elements */
-    --border-radius: 16px;
-    --border-radius-sm: 8px;
-    --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-
-    /* Sidebar */
-    --sidebar-bg: #12131C;
-    --sidebar-text: #353233;
-    --sidebar-active: #2A2A3C;
-    --sidebar-border: oklch(0.922 0 0);
-    --sidebar-hover: rgba(154, 168, 251, 0.1);
-    --sidebar-active-border: #9EA8FB;
-    --radius: 0.625rem;
-    --card: oklch(1 0 0);
-    --card-foreground: oklch(0.145 0 0);
-    --popover: oklch(1 0 0);
-    --popover-foreground: oklch(0.145 0 0);
-    --primary-foreground: oklch(0.985 0 0);
-    --secondary: oklch(0.97 0 0);
-    --secondary-foreground: oklch(0.205 0 0);
-    --muted: oklch(0.97 0 0);
-    --muted-foreground: oklch(0.556 0 0);
-    --accent: oklch(0.97 0 0);
-    --accent-foreground: oklch(0.205 0 0);
-    --destructive: oklch(0.577 0.245 27.325);
-    --border: oklch(0.922 0 0);
-    --input: oklch(0.922 0 0);
-    --ring: oklch(0.708 0 0);
-    --chart-1: oklch(0.646 0.222 41.116);
-    --chart-2: oklch(0.6 0.118 184.704);
-    --chart-3: oklch(0.398 0.07 227.392);
-    --chart-4: oklch(0.828 0.189 84.429);
-    --chart-5: oklch(0.769 0.188 70.08);
-    --sidebar: oklch(0.985 0 0);
-    --sidebar-foreground: oklch(0.145 0 0);
-    --sidebar-primary: oklch(0.205 0 0);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.97 0 0);
-    --sidebar-accent-foreground: oklch(0.205 0 0);
-    --sidebar-ring: oklch(0.708 0 0);
-    --background: oklch(1 0 0);
-    --foreground: oklch(0.145 0 0);
-}
-
-/* Dark mode variables */
-.dark {
-    --background: oklch(0.145 0 0);
-    --foreground: oklch(0.985 0 0); /* Specific dark mode text color */
-    --container-bg: #181D27;
-    --container-border: #353233;
-    --card: oklch(0.205 0 0);
-    --card-foreground: oklch(0.985 0 0);
-    --popover: oklch(0.205 0 0);
-    --popover-foreground: oklch(0.985 0 0);
-    --primary: oklch(0.922 0 0);
-    --primary-foreground: oklch(0.205 0 0);
-    --secondary: oklch(0.269 0 0);
-    --secondary-foreground: oklch(0.985 0 0);
-    --muted: oklch(0.269 0 0);
-    --muted-foreground: oklch(0.708 0 0);
-    --accent: oklch(0.269 0 0);
-    --accent-foreground: oklch(0.985 0 0);
-    --destructive: oklch(0.704 0.191 22.216);
-    --border: oklch(1 0 0 / 10%);
-    --input: oklch(1 0 0 / 15%);
-    --ring: oklch(0.556 0 0);
-    --chart-1: oklch(0.488 0.243 264.376);
-    --chart-2: oklch(0.696 0.17 162.48);
-    --chart-3: oklch(0.769 0.188 70.08);
-    --chart-4: oklch(0.627 0.265 303.9);
-    --chart-5: oklch(0.645 0.246 16.439);
-    --sidebar: oklch(0.205 0 0);
-    --sidebar-foreground: oklch(0.985 0 0);
-    --sidebar-primary: oklch(0.488 0.243 264.376);
-    --sidebar-primary-foreground: oklch(0.985 0 0);
-    --sidebar-accent: oklch(0.269 0 0);
-    --sidebar-accent-foreground: oklch(0.985 0 0);
-    --sidebar-border: oklch(1 0 0 / 10%);
-    --sidebar-ring: oklch(0.556 0 0);
-}
-
-/* Dark mode background with Group 35634.png image */
-.dark body {
-    background-color: var(--background) !important;
-    background-image: url('/images/Group 35634.png') !important;
-    background-size: cover !important;
-    background-position: center center !important;
-    background-attachment: fixed !important;
-    color: var(--foreground) !important;
-}
-
-/* Add blue glow effects in corners for dark mode */
-.dark .blue-glow-top-left::before {
-    content: "";
-    position: fixed;
-    top: -150px;
-    left: -150px;
-    width: 400px;
-    height: 400px;
-    border-radius: 50%;
-    background: rgba(94, 114, 228, 0.25);
-    filter: blur(100px);
-    z-index: -1;
-}
-
-.dark .blue-glow-bottom-right::after {
-    content: "";
-    position: fixed;
-    bottom: -150px;
-    right: -150px;
-    width: 400px;
-    height: 400px;
-    border-radius: 50%;
-    background: rgba(94, 114, 228, 0.25);
-    filter: blur(100px);
-    z-index: -1;
-}
-
-body {
-    font-family: var(--font-family);
-}
-
-/* Global text color enforcement */
-p, h1, h2, h3, h4, h5, h6, span, div, a, button, input, select, textarea, label {
-    color: #353233 !important;
-}
-
-.dark p, .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6, .dark span, .dark div, .dark a, .dark button, .dark input, .dark select, .dark textarea, .dark label {
-    color: #FFFFFF !important;
-}
-
-/* Override for card elements in dark mode */
-.dark .card p, .dark .card h1, .dark .card h2, .dark .card h3, .dark .card h4, .dark .card h5, .dark .card h6,
-.dark .card span, .dark .card div, .dark .card a, .dark .card button, .dark .card input, .dark .card select,
-.dark .card textarea, .dark .card label,
-.dark .bg-[\#FFF9DB] p, .dark .bg-[\#F8E8FF] p, .dark .bg-[\#FFF8E1] p, .dark .bg-[\#E8F5E9] p, .dark .bg-[\#E3F2FD] p,
-.dark .bg-[\#FFF9DB] h1, .dark .bg-[\#F8E8FF] h1, .dark .bg-[\#FFF8E1] h1, .dark .bg-[\#E8F5E9] h1, .dark .bg-[\#E3F2FD] h1,
-.dark .bg-[\#FFF9DB] h2, .dark .bg-[\#F8E8FF] h2, .dark .bg-[\#FFF8E1] h2, .dark .bg-[\#E8F5E9] h2, .dark .bg-[\#E3F2FD] h2,
-.dark .bg-[\#FFF9DB] h3, .dark .bg-[\#F8E8FF] h3, .dark .bg-[\#FFF8E1] h3, .dark .bg-[\#E8F5E9] h3, .dark .bg-[\#E3F2FD] h3,
-.dark .bg-[\#FFF9DB] span, .dark .bg-[\#F8E8FF] span, .dark .bg-[\#FFF8E1] span, .dark .bg-[\#E8F5E9] span, .dark .bg-[\#E3F2FD] span,
-.dark .bg-[\#FFF9DB] div, .dark .bg-[\#F8E8FF] div, .dark .bg-[\#FFF8E1] div, .dark .bg-[\#E8F5E9] div, .dark .bg-[\#E3F2FD] div {
-    color: #353233 !important;
-}
-
-/* Force text colors for all elements */
-:root {
-    --text-color: #353233;
-}
-
-.dark {
-    --text-color: #FFFFFF;
-}
-
-* {
-    color: var(--text-color);
-}
-
-/* Exceptions for specific elements */
-.text-primary, .text-primary *, a.text-primary, button.text-primary {
-    color: var(--primary) !important;
-}
-
-.dark .text-primary, .dark .text-primary *, .dark a.text-primary, .dark button.text-primary {
-    color: var(--primary) !important;
-}
-
-/* Sidebar text color overrides */
-.bg-sidebar-bg, .bg-sidebar-bg *, .bg-sidebar-active, .bg-sidebar-active * {
-    color: #FFFFFF !important;
-}
-
-/* Ensure sidebar text remains white in dark mode */
-.dark .bg-sidebar-bg, .dark .bg-sidebar-bg *, .dark .bg-sidebar-active, .dark .bg-sidebar-active * {
-    color: #FFFFFF !important;
-}
-
-/* Sidebar text color for specific elements */
-.sidebar-nav-link, .sidebar-nav-link * {
-    color: #353233 !important;
-}
-
-/* Ensure sidebar logo text is correct in dark mode */
-.dark .sidebar-nav-link, .dark .sidebar-nav-link * {
-    color: #353233 !important;
-}
-
-/* Logo text color */
-.logo-text, .logo-text * {
-    color: #353233 !important;
-}
-
-/* Exceptions for white text */
-.text-white, .text-white *, a.text-white, button.text-white, .bg-primary *, .bg-primary button, .bg-primary a {
-    color: white !important;
-}
-
-/* Exceptions for specific UI elements */
-.bg-[\#FFF9DB] *, .bg-[\#F8E8FF] *, .bg-[\#FFF8E1] *, .bg-[\#E8F5E9] *, .bg-[\#E3F2FD] * {
-    color: #353233 !important;
-}
-
-/* Dark mode card overrides - keep same background colors as light mode */
-/* We're keeping the original background colors in dark mode for better readability */
-
-/* Light mode text color fixes */
-.text-dark {
-    color: #353233 !important; /* Updated to match specified light mode text color */
-}
-
-.text-mediumGray {
-    color: #4F515E !important;
-}
-
-.text-darkGray {
-    color: #353233 !important; /* Updated to match specified light mode text color */
-}
-
-/* Additional text color enforcement */
-.text-black {
-    color: #353233 !important;
-}
-
-.dark .text-black {
-    color: #FFFFFF !important;
-}
-
-/* Sidebar specific light mode fixes */
-.bg-white {
-    background-color: #ffffff !important;
-}
-
-.border-lightGray {
-    border-color: #e5e7eb !important;
-}
-
-/* Primary color for active items */
-.bg-primary {
-    background-color: var(--primary) !important;
-}
-
-.text-primary {
-    color: var(--primary) !important;
-}
-
-/* Button styles */
-button {
-    border-radius: 8px !important;
-    transition: all 0.2s ease-in-out !important;
-}
-
-button:hover {
-    transform: translateY(-1px) !important;
-}
-
-/* Tab navigation styles */
-.tab-navigation {
-    display: flex;
-    border-bottom-width: 1px;
-    border-color: #F5F5F9;
-}
-
-.dark .tab-navigation {
-    border-color: #4F515E;
-}
-
-.tab-item {
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
-    padding-top: 0.75rem;
-    padding-bottom: 0.75rem;
-    font-size: 0.875rem;
-    font-weight: 500;
-    white-space: nowrap;
-    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
-    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-    transition-duration: 150ms;
-}
-
-.tab-item:focus {
-    outline: none;
-    --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
-    --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
-    box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
-    --tw-ring-opacity: 0.2;
-    --tw-ring-color: rgba(158, 168, 251, var(--tw-ring-opacity));
-}
-
-.tab-item-active {
-    color: var(--primary);
-    border-bottom-width: 2px;
-    border-color: var(--primary);
-}
-
-.tab-item-inactive {
-    color: #4F515E;
-}
-
-.tab-item-inactive:hover {
-    color: #12131C;
-}
-
-.dark .tab-item-inactive:hover {
-    color: white;
-}
-
-/* Page container styles */
-.page-container {
-    background-color: var(--container-bg);
-    border-radius: var(--border-radius);
-    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    border: 1px solid var(--container-border);
-    margin-bottom: 1.5rem;
-}
-
-.dark .page-container {
-    background-color: var(--container-bg);
-    border-color: var(--container-border);
-}
-
-.page-container-header {
-    padding: 1.5rem;
-    border-bottom: 1px solid var(--container-border);
-}
-
-.dark .page-container-header {
-    border-color: var(--container-border);
-}
-
-.page-container-body {
-    padding: 1.5rem;
-    overflow: hidden; /* Ensures content doesn't overflow the container */
-}
-
-.page-container-footer {
-    padding: 1.5rem;
-    border-top: 1px solid var(--container-border);
-}
-
-.dark .page-container-footer {
-    border-color: var(--container-border);
-}
-
-.page-container-tabs {
-    padding: 1rem;
-    border-bottom: 1px solid var(--container-border);
-    overflow-x: auto;
-}
-
-.page-container-tabs.border-t-0 {
-    border-top: 0;
-    padding-top: 0;
-}
-
-.dark .page-container-tabs {
-    border-color: var(--container-border);
-}
-
-/* Box and container styles */
-.bg-white,
-.bg-lightGray,
-.bg-dark,
-.bg-darkGray,
-div[class*="bg-"] {
-    border-radius: 8px !important;
-}
-
-/* Card background colors */
-.bg-card-yellow {
-    background-color: var(--card-yellow);
-}
-
-.bg-card-blue {
-    background-color: var(--card-blue);
-}
-
-.bg-card-purple {
-    background-color: var(--card-purple);
-}
-
-.bg-brand-1-icon {
-    background-color: var(--brand-1);
-}
-
-/* Card-like elements */
-[class*="card"],
-[class*="box"],
-[class*="container"],
-.p-4, .p-6, .p-8 {
-    border-radius: 8px !important;
-}
-
-/* Force dark mode styles */
-.dark body {
-    background-color: var(--background) !important;
-    background-image: url('/images/Group 35634.png') !important;
-    background-size: cover !important;
-    background-position: center center !important;
-    background-attachment: fixed !important;
-    color: var(--foreground) !important;
-}
-
-/* Keep white backgrounds in dark mode for better readability */
-.dark .bg-white {
-    background-color: white !important;
-}
-
-.dark .text-dark {
-    color: #FFFFFF !important; /* Updated to match specified dark mode text color */
-}
-
-.dark .text-darkGray {
-    color: #FFFFFF !important; /* Updated to match specified dark mode text color */
-}
-
-.dark .text-mediumGray {
-    color: #a0a0a0 !important;
-}
-
-.dark .border-lightGray {
-    border-color: var(--container-border) !important;
-}
-
-/* Additional dark mode overrides */
-.dark .bg-lightGray {
-    background-color: var(--container-bg) !important;
-}
-
-/* TopNavBar styling */
-.fixed.top-0 {
-    border-radius: 0 !important;
-}
-
-.fixed.top-0 a,
-.fixed.top-0 button {
-    border-radius: 0 !important;
-}
-
-/* Logo styling */
-.logo-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.logo-text {
-    font-family: 'Roboto', sans-serif;
-    font-weight: 700;
-    letter-spacing: 0.1rem;
-}
-
-.logo-dot {
-    color: #9EA8FB;
-    display: inline-block;
-    position: relative;
-    top: 3px; /* Adjusted to move the dot lower */
-    margin-left: -2px; /* Bring the dot slightly closer to the text */
-}
-
-@theme inline {
-    --radius-sm: calc(var(--radius) - 4px);
-    --radius-md: calc(var(--radius) - 2px);
-    --radius-lg: var(--radius);
-    --radius-xl: calc(var(--radius) + 4px);
-    --color-background: var(--background);
-    --color-foreground: var(--foreground);
-    --color-card: var(--card);
-    --color-card-foreground: var(--card-foreground);
-    --color-popover: var(--popover);
-    --color-popover-foreground: var(--popover-foreground);
-    --color-primary: var(--primary);
-    --color-primary-foreground: var(--primary-foreground);
-    --color-secondary: var(--secondary);
-    --color-secondary-foreground: var(--secondary-foreground);
-    --color-muted: var(--muted);
-    --color-muted-foreground: var(--muted-foreground);
-    --color-accent: var(--accent);
-    --color-accent-foreground: var(--accent-foreground);
-    --color-destructive: var(--destructive);
-    --color-border: var(--border);
-    --color-input: var(--input);
-    --color-ring: var(--ring);
-    --color-chart-1: var(--chart-1);
-    --color-chart-2: var(--chart-2);
-    --color-chart-3: var(--chart-3);
-    --color-chart-4: var(--chart-4);
-    --color-chart-5: var(--chart-5);
-    --color-sidebar: var(--sidebar);
-    --color-sidebar-foreground: var(--sidebar-foreground);
-    --color-sidebar-primary: var(--sidebar-primary);
-    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-    --color-sidebar-accent: var(--sidebar-accent);
-    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-    --color-sidebar-border: var(--sidebar-border);
-    --color-sidebar-ring: var(--sidebar-ring);
-}
-
 @layer base {
-    * {
-        @apply border-border outline-ring/50;
-    }
 
-    body {
-        @apply bg-background text-foreground;
-    }
 }
+/*@custom-variant dark (&:is(.dark *));*/
+
+/*:root {*/
+/*    !* Base theme colors from Figma *!*/
+/*    --primary: oklch(0.205 0 0); !* periwinkle blue *!*/
+/*    --brand-1: #9EA8FB;*/
+/*    --brand-2: #99A9FF;*/
+/*    --brand-accent: #EADCFF;*/
+/*    --brand-yellow: #FFE4A6;*/
+
+/*    !* Light mode *! !* Specific light mode text color *!*/
+/*    --container-bg: #FFFFFF;*/
+/*    --container-border: #F5F5F9;*/
+
+/*    !* Grays *!*/
+/*    --light-gray: #F5F5F9;*/
+/*    --medium-gray: #4F515E;*/
+/*    --dark-gray: #181D27;*/
+/*    --dark: #12131C;*/
+
+/*    !* Card colors *!*/
+/*    --card-yellow: #FFF9DB;*/
+/*    --card-blue: #E8EAF6;*/
+/*    --card-purple: #EDE7F6;*/
+
+/*    !* UI elements *!*/
+/*    --border-radius: 16px;*/
+/*    --border-radius-sm: 8px;*/
+/*    --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;*/
+
+/*    !* Sidebar *!*/
+/*    --sidebar-bg: #12131C;*/
+/*    --sidebar-text: #353233;*/
+/*    --sidebar-active: #2A2A3C;*/
+/*    --sidebar-border: oklch(0.922 0 0);*/
+/*    --sidebar-hover: rgba(154, 168, 251, 0.1);*/
+/*    --sidebar-active-border: #9EA8FB;*/
+/*    --radius: 0.625rem;*/
+/*    --card: oklch(1 0 0);*/
+/*    --card-foreground: oklch(0.145 0 0);*/
+/*    --popover: oklch(1 0 0);*/
+/*    --popover-foreground: oklch(0.145 0 0);*/
+/*    --primary-foreground: oklch(0.985 0 0);*/
+/*    --secondary: oklch(0.97 0 0);*/
+/*    --secondary-foreground: oklch(0.205 0 0);*/
+/*    --muted: oklch(0.97 0 0);*/
+/*    --muted-foreground: oklch(0.556 0 0);*/
+/*    --accent: oklch(0.97 0 0);*/
+/*    --accent-foreground: oklch(0.205 0 0);*/
+/*    --destructive: oklch(0.577 0.245 27.325);*/
+/*    --border: oklch(0.922 0 0);*/
+/*    --input: oklch(0.922 0 0);*/
+/*    --ring: oklch(0.708 0 0);*/
+/*    --chart-1: oklch(0.646 0.222 41.116);*/
+/*    --chart-2: oklch(0.6 0.118 184.704);*/
+/*    --chart-3: oklch(0.398 0.07 227.392);*/
+/*    --chart-4: oklch(0.828 0.189 84.429);*/
+/*    --chart-5: oklch(0.769 0.188 70.08);*/
+/*    --sidebar: oklch(0.985 0 0);*/
+/*    --sidebar-foreground: oklch(0.145 0 0);*/
+/*    --sidebar-primary: oklch(0.205 0 0);*/
+/*    --sidebar-primary-foreground: oklch(0.985 0 0);*/
+/*    --sidebar-accent: oklch(0.97 0 0);*/
+/*    --sidebar-accent-foreground: oklch(0.205 0 0);*/
+/*    --sidebar-ring: oklch(0.708 0 0);*/
+/*    --background: oklch(1 0 0);*/
+/*    --foreground: oklch(0.145 0 0);*/
+/*}*/
+
+/*!* Dark mode variables *!*/
+/*.dark {*/
+/*    --background: oklch(0.145 0 0);*/
+/*    --foreground: oklch(0.985 0 0); !* Specific dark mode text color *!*/
+/*    --container-bg: #181D27;*/
+/*    --container-border: #353233;*/
+/*    --card: oklch(0.205 0 0);*/
+/*    --card-foreground: oklch(0.985 0 0);*/
+/*    --popover: oklch(0.205 0 0);*/
+/*    --popover-foreground: oklch(0.985 0 0);*/
+/*    --primary: oklch(0.922 0 0);*/
+/*    --primary-foreground: oklch(0.205 0 0);*/
+/*    --secondary: oklch(0.269 0 0);*/
+/*    --secondary-foreground: oklch(0.985 0 0);*/
+/*    --muted: oklch(0.269 0 0);*/
+/*    --muted-foreground: oklch(0.708 0 0);*/
+/*    --accent: oklch(0.269 0 0);*/
+/*    --accent-foreground: oklch(0.985 0 0);*/
+/*    --destructive: oklch(0.704 0.191 22.216);*/
+/*    --border: oklch(1 0 0 / 10%);*/
+/*    --input: oklch(1 0 0 / 15%);*/
+/*    --ring: oklch(0.556 0 0);*/
+/*    --chart-1: oklch(0.488 0.243 264.376);*/
+/*    --chart-2: oklch(0.696 0.17 162.48);*/
+/*    --chart-3: oklch(0.769 0.188 70.08);*/
+/*    --chart-4: oklch(0.627 0.265 303.9);*/
+/*    --chart-5: oklch(0.645 0.246 16.439);*/
+/*    --sidebar: oklch(0.205 0 0);*/
+/*    --sidebar-foreground: oklch(0.985 0 0);*/
+/*    --sidebar-primary: oklch(0.488 0.243 264.376);*/
+/*    --sidebar-primary-foreground: oklch(0.985 0 0);*/
+/*    --sidebar-accent: oklch(0.269 0 0);*/
+/*    --sidebar-accent-foreground: oklch(0.985 0 0);*/
+/*    --sidebar-border: oklch(1 0 0 / 10%);*/
+/*    --sidebar-ring: oklch(0.556 0 0);*/
+/*}*/
+
+/*!* Dark mode background with Group 35634.png image *!*/
+/*.dark body {*/
+/*    background-color: var(--background) !important;*/
+/*    background-image: url('/images/Group 35634.png') !important;*/
+/*    background-size: cover !important;*/
+/*    background-position: center center !important;*/
+/*    background-attachment: fixed !important;*/
+/*    color: var(--foreground) !important;*/
+/*}*/
+
+/*!* Add blue glow effects in corners for dark mode *!*/
+/*.dark .blue-glow-top-left::before {*/
+/*    content: "";*/
+/*    position: fixed;*/
+/*    top: -150px;*/
+/*    left: -150px;*/
+/*    width: 400px;*/
+/*    height: 400px;*/
+/*    border-radius: 50%;*/
+/*    background: rgba(94, 114, 228, 0.25);*/
+/*    filter: blur(100px);*/
+/*    z-index: -1;*/
+/*}*/
+
+/*.dark .blue-glow-bottom-right::after {*/
+/*    content: "";*/
+/*    position: fixed;*/
+/*    bottom: -150px;*/
+/*    right: -150px;*/
+/*    width: 400px;*/
+/*    height: 400px;*/
+/*    border-radius: 50%;*/
+/*    background: rgba(94, 114, 228, 0.25);*/
+/*    filter: blur(100px);*/
+/*    z-index: -1;*/
+/*}*/
+
+/*body {*/
+/*    font-family: var(--font-family);*/
+/*}*/
+
+/*!* Global text color enforcement *!*/
+/*p, h1, h2, h3, h4, h5, h6, span, div, a, button, input, select, textarea, label {*/
+/*    color: #353233 !important;*/
+/*}*/
+
+/*.dark p, .dark h1, .dark h2, .dark h3, .dark h4, .dark h5, .dark h6, .dark span, .dark div, .dark a, .dark button, .dark input, .dark select, .dark textarea, .dark label {*/
+/*    color: #FFFFFF !important;*/
+/*}*/
+
+/*!* Override for card elements in dark mode *!*/
+/*.dark .card p, .dark .card h1, .dark .card h2, .dark .card h3, .dark .card h4, .dark .card h5, .dark .card h6,*/
+/*.dark .card span, .dark .card div, .dark .card a, .dark .card button, .dark .card input, .dark .card select,*/
+/*.dark .card textarea, .dark .card label,*/
+/*.dark .bg-[\#FFF9DB] p, .dark .bg-[\#F8E8FF] p, .dark .bg-[\#FFF8E1] p, .dark .bg-[\#E8F5E9] p, .dark .bg-[\#E3F2FD] p,*/
+/*.dark .bg-[\#FFF9DB] h1, .dark .bg-[\#F8E8FF] h1, .dark .bg-[\#FFF8E1] h1, .dark .bg-[\#E8F5E9] h1, .dark .bg-[\#E3F2FD] h1,*/
+/*.dark .bg-[\#FFF9DB] h2, .dark .bg-[\#F8E8FF] h2, .dark .bg-[\#FFF8E1] h2, .dark .bg-[\#E8F5E9] h2, .dark .bg-[\#E3F2FD] h2,*/
+/*.dark .bg-[\#FFF9DB] h3, .dark .bg-[\#F8E8FF] h3, .dark .bg-[\#FFF8E1] h3, .dark .bg-[\#E8F5E9] h3, .dark .bg-[\#E3F2FD] h3,*/
+/*.dark .bg-[\#FFF9DB] span, .dark .bg-[\#F8E8FF] span, .dark .bg-[\#FFF8E1] span, .dark .bg-[\#E8F5E9] span, .dark .bg-[\#E3F2FD] span,*/
+/*.dark .bg-[\#FFF9DB] div, .dark .bg-[\#F8E8FF] div, .dark .bg-[\#FFF8E1] div, .dark .bg-[\#E8F5E9] div, .dark .bg-[\#E3F2FD] div {*/
+/*    color: #353233 !important;*/
+/*}*/
+
+/*!* Force text colors for all elements *!*/
+/*:root {*/
+/*    --text-color: #353233;*/
+/*}*/
+
+/*.dark {*/
+/*    --text-color: #FFFFFF;*/
+/*}*/
+
+/** {*/
+/*    color: var(--text-color);*/
+/*}*/
+
+/*!* Exceptions for specific elements *!*/
+/*.text-primary, .text-primary *, a.text-primary, button.text-primary {*/
+/*    color: var(--primary) !important;*/
+/*}*/
+
+/*.dark .text-primary, .dark .text-primary *, .dark a.text-primary, .dark button.text-primary {*/
+/*    color: var(--primary) !important;*/
+/*}*/
+
+/*!* Sidebar text color overrides *!*/
+/*.bg-sidebar-bg, .bg-sidebar-bg *, .bg-sidebar-active, .bg-sidebar-active * {*/
+/*    color: #FFFFFF !important;*/
+/*}*/
+
+/*!* Ensure sidebar text remains white in dark mode *!*/
+/*.dark .bg-sidebar-bg, .dark .bg-sidebar-bg *, .dark .bg-sidebar-active, .dark .bg-sidebar-active * {*/
+/*    color: #FFFFFF !important;*/
+/*}*/
+
+/*!* Sidebar text color for specific elements *!*/
+/*.sidebar-nav-link, .sidebar-nav-link * {*/
+/*    color: #353233 !important;*/
+/*}*/
+
+/*!* Ensure sidebar logo text is correct in dark mode *!*/
+/*.dark .sidebar-nav-link, .dark .sidebar-nav-link * {*/
+/*    color: #353233 !important;*/
+/*}*/
+
+/*!* Logo text color *!*/
+/*.logo-text, .logo-text * {*/
+/*    color: #353233 !important;*/
+/*}*/
+
+/*!* Exceptions for white text *!*/
+/*.text-white, .text-white *, a.text-white, button.text-white, .bg-primary *, .bg-primary button, .bg-primary a {*/
+/*    color: white !important;*/
+/*}*/
+
+/*!* Exceptions for specific UI elements *!*/
+/*.bg-[\#FFF9DB] *, .bg-[\#F8E8FF] *, .bg-[\#FFF8E1] *, .bg-[\#E8F5E9] *, .bg-[\#E3F2FD] * {*/
+/*    color: #353233 !important;*/
+/*}*/
+
+/*!* Dark mode card overrides - keep same background colors as light mode *!*/
+/*!* We're keeping the original background colors in dark mode for better readability *!*/
+
+/*!* Light mode text color fixes *!*/
+/*.text-dark {*/
+/*    color: #353233 !important; !* Updated to match specified light mode text color *!*/
+/*}*/
+
+/*.text-mediumGray {*/
+/*    color: #4F515E !important;*/
+/*}*/
+
+/*.text-darkGray {*/
+/*    color: #353233 !important; !* Updated to match specified light mode text color *!*/
+/*}*/
+
+/*!* Additional text color enforcement *!*/
+/*.text-black {*/
+/*    color: #353233 !important;*/
+/*}*/
+
+/*.dark .text-black {*/
+/*    color: #FFFFFF !important;*/
+/*}*/
+
+/*!* Sidebar specific light mode fixes *!*/
+/*.bg-white {*/
+/*    background-color: #ffffff !important;*/
+/*}*/
+
+/*.border-lightGray {*/
+/*    border-color: #e5e7eb !important;*/
+/*}*/
+
+/*!* Primary color for active items *!*/
+/*.bg-primary {*/
+/*    background-color: var(--primary) !important;*/
+/*}*/
+
+/*.text-primary {*/
+/*    color: var(--primary) !important;*/
+/*}*/
+
+/*!* Button styles *!*/
+/*button {*/
+/*    border-radius: 8px !important;*/
+/*    transition: all 0.2s ease-in-out !important;*/
+/*}*/
+
+/*button:hover {*/
+/*    transform: translateY(-1px) !important;*/
+/*}*/
+
+/*!* Tab navigation styles *!*/
+/*.tab-navigation {*/
+/*    display: flex;*/
+/*    border-bottom-width: 1px;*/
+/*    border-color: #F5F5F9;*/
+/*}*/
+
+/*.dark .tab-navigation {*/
+/*    border-color: #4F515E;*/
+/*}*/
+
+/*.tab-item {*/
+/*    padding-left: 1.5rem;*/
+/*    padding-right: 1.5rem;*/
+/*    padding-top: 0.75rem;*/
+/*    padding-bottom: 0.75rem;*/
+/*    font-size: 0.875rem;*/
+/*    font-weight: 500;*/
+/*    white-space: nowrap;*/
+/*    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;*/
+/*    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);*/
+/*    transition-duration: 150ms;*/
+/*}*/
+
+/*.tab-item:focus {*/
+/*    outline: none;*/
+/*    --tw-ring-offset-shadow: var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);*/
+/*    --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);*/
+/*    box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);*/
+/*    --tw-ring-opacity: 0.2;*/
+/*    --tw-ring-color: rgba(158, 168, 251, var(--tw-ring-opacity));*/
+/*}*/
+
+/*.tab-item-active {*/
+/*    color: var(--primary);*/
+/*    border-bottom-width: 2px;*/
+/*    border-color: var(--primary);*/
+/*}*/
+
+/*.tab-item-inactive {*/
+/*    color: #4F515E;*/
+/*}*/
+
+/*.tab-item-inactive:hover {*/
+/*    color: #12131C;*/
+/*}*/
+
+/*.dark .tab-item-inactive:hover {*/
+/*    color: white;*/
+/*}*/
+
+/*!* Page container styles *!*/
+/*.page-container {*/
+/*    background-color: var(--container-bg);*/
+/*    border-radius: var(--border-radius);*/
+/*    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);*/
+/*    border: 1px solid var(--container-border);*/
+/*    margin-bottom: 1.5rem;*/
+/*}*/
+
+/*.dark .page-container {*/
+/*    background-color: var(--container-bg);*/
+/*    border-color: var(--container-border);*/
+/*}*/
+
+/*.page-container-header {*/
+/*    padding: 1.5rem;*/
+/*    border-bottom: 1px solid var(--container-border);*/
+/*}*/
+
+/*.dark .page-container-header {*/
+/*    border-color: var(--container-border);*/
+/*}*/
+
+/*.page-container-body {*/
+/*    padding: 1.5rem;*/
+/*    overflow: hidden; !* Ensures content doesn't overflow the container *!*/
+/*}*/
+
+/*.page-container-footer {*/
+/*    padding: 1.5rem;*/
+/*    border-top: 1px solid var(--container-border);*/
+/*}*/
+
+/*.dark .page-container-footer {*/
+/*    border-color: var(--container-border);*/
+/*}*/
+
+/*.page-container-tabs {*/
+/*    padding: 1rem;*/
+/*    border-bottom: 1px solid var(--container-border);*/
+/*    overflow-x: auto;*/
+/*}*/
+
+/*.page-container-tabs.border-t-0 {*/
+/*    border-top: 0;*/
+/*    padding-top: 0;*/
+/*}*/
+
+/*.dark .page-container-tabs {*/
+/*    border-color: var(--container-border);*/
+/*}*/
+
+/*!* Box and container styles *!*/
+/*.bg-white,*/
+/*.bg-lightGray,*/
+/*.bg-dark,*/
+/*.bg-darkGray,*/
+/*div[class*="bg-"] {*/
+/*    border-radius: 8px !important;*/
+/*}*/
+
+/*!* Card background colors *!*/
+/*.bg-card-yellow {*/
+/*    background-color: var(--card-yellow);*/
+/*}*/
+
+/*.bg-card-blue {*/
+/*    background-color: var(--card-blue);*/
+/*}*/
+
+/*.bg-card-purple {*/
+/*    background-color: var(--card-purple);*/
+/*}*/
+
+/*.bg-brand-1-icon {*/
+/*    background-color: var(--brand-1);*/
+/*}*/
+
+/*!* Card-like elements *!*/
+/*[class*="card"],*/
+/*[class*="box"],*/
+/*[class*="container"],*/
+/*.p-4, .p-6, .p-8 {*/
+/*    border-radius: 8px !important;*/
+/*}*/
+
+/*!* Force dark mode styles *!*/
+/*.dark body {*/
+/*    background-color: var(--background) !important;*/
+/*    background-image: url('/images/Group 35634.png') !important;*/
+/*    background-size: cover !important;*/
+/*    background-position: center center !important;*/
+/*    background-attachment: fixed !important;*/
+/*    color: var(--foreground) !important;*/
+/*}*/
+
+/*!* Keep white backgrounds in dark mode for better readability *!*/
+/*.dark .bg-white {*/
+/*    background-color: white !important;*/
+/*}*/
+
+/*.dark .text-dark {*/
+/*    color: #FFFFFF !important; !* Updated to match specified dark mode text color *!*/
+/*}*/
+
+/*.dark .text-darkGray {*/
+/*    color: #FFFFFF !important; !* Updated to match specified dark mode text color *!*/
+/*}*/
+
+/*.dark .text-mediumGray {*/
+/*    color: #a0a0a0 !important;*/
+/*}*/
+
+/*.dark .border-lightGray {*/
+/*    border-color: var(--container-border) !important;*/
+/*}*/
+
+/*!* Additional dark mode overrides *!*/
+/*.dark .bg-lightGray {*/
+/*    background-color: var(--container-bg) !important;*/
+/*}*/
+
+/*!* TopNavBar styling *!*/
+/*.fixed.top-0 {*/
+/*    border-radius: 0 !important;*/
+/*}*/
+
+/*.fixed.top-0 a,*/
+/*.fixed.top-0 button {*/
+/*    border-radius: 0 !important;*/
+/*}*/
+
+/*!* Logo styling *!*/
+/*.logo-container {*/
+/*    display: flex;*/
+/*    justify-content: center;*/
+/*    align-items: center;*/
+/*}*/
+
+/*.logo-text {*/
+/*    font-family: 'Roboto', sans-serif;*/
+/*    font-weight: 700;*/
+/*    letter-spacing: 0.1rem;*/
+/*}*/
+
+/*.logo-dot {*/
+/*    color: #9EA8FB;*/
+/*    display: inline-block;*/
+/*    position: relative;*/
+/*    top: 3px; !* Adjusted to move the dot lower *!*/
+/*    margin-left: -2px; !* Bring the dot slightly closer to the text *!*/
+/*}*/
+
+/*@theme inline {*/
+/*    --radius-sm: calc(var(--radius) - 4px);*/
+/*    --radius-md: calc(var(--radius) - 2px);*/
+/*    --radius-lg: var(--radius);*/
+/*    --radius-xl: calc(var(--radius) + 4px);*/
+/*    --color-background: var(--background);*/
+/*    --color-foreground: var(--foreground);*/
+/*    --color-card: var(--card);*/
+/*    --color-card-foreground: var(--card-foreground);*/
+/*    --color-popover: var(--popover);*/
+/*    --color-popover-foreground: var(--popover-foreground);*/
+/*    --color-primary: var(--primary);*/
+/*    --color-primary-foreground: var(--primary-foreground);*/
+/*    --color-secondary: var(--secondary);*/
+/*    --color-secondary-foreground: var(--secondary-foreground);*/
+/*    --color-muted: var(--muted);*/
+/*    --color-muted-foreground: var(--muted-foreground);*/
+/*    --color-accent: var(--accent);*/
+/*    --color-accent-foreground: var(--accent-foreground);*/
+/*    --color-destructive: var(--destructive);*/
+/*    --color-border: var(--border);*/
+/*    --color-input: var(--input);*/
+/*    --color-ring: var(--ring);*/
+/*    --color-chart-1: var(--chart-1);*/
+/*    --color-chart-2: var(--chart-2);*/
+/*    --color-chart-3: var(--chart-3);*/
+/*    --color-chart-4: var(--chart-4);*/
+/*    --color-chart-5: var(--chart-5);*/
+/*    --color-sidebar: var(--sidebar);*/
+/*    --color-sidebar-foreground: var(--sidebar-foreground);*/
+/*    --color-sidebar-primary: var(--sidebar-primary);*/
+/*    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);*/
+/*    --color-sidebar-accent: var(--sidebar-accent);*/
+/*    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);*/
+/*    --color-sidebar-border: var(--sidebar-border);*/
+/*    --color-sidebar-ring: var(--sidebar-ring);*/
+/*}*/
+
+/*@layer base {*/
+/*    * {*/
+/*        @apply border-border outline-ring/50;*/
+/*    }*/
+
+/*    body {*/
+/*        @apply bg-background text-foreground;*/
+/*    }*/
+/*}*/
