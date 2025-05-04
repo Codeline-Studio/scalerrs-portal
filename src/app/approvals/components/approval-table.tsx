@@ -1,23 +1,32 @@
-'use client';
+"use client";
 
-import { StatusBadge } from './status-badge';
-import { useState } from 'react';
-import RejectionModal from './rejection-modal';
-import { approveItem, requestChanges } from '@/actions/approvals';
+import { StatusBadge } from "./status-badge";
+import { useState } from "react";
+import RejectionModal from "./rejection-modal";
+import {
+  approveItem,
+  requestChanges,
+  ApprovalTableProps,
+  KeywordApprovalItem,
+  BriefApprovalItem,
+  ArticleApprovalItem,
+  BacklinkApprovalItem,
+  QuickWinApprovalItem,
+  ApprovalItem,
+} from "@/actions/approvals";
 
 export default function ApprovalTable({
   items,
   categoryKey,
-  onItemsUpdated
-}: {
-  items: any[];
-  categoryKey: string;
-  onItemsUpdated?: () => void;
-}) {
-  const [rejectionModal, setRejectionModal] = useState({ isOpen: false, itemId: 0 });
+  onItemsUpdated,
+}: ApprovalTableProps) {
+  const [rejectionModal, setRejectionModal] = useState({
+    isOpen: false,
+    itemId: 0,
+  });
 
   const handleApprove = async (id: number) => {
-    const result = await approveItem(categoryKey as any, id);
+    const result = await approveItem(categoryKey, id);
     if (result.success && onItemsUpdated) {
       onItemsUpdated();
     }
@@ -28,12 +37,27 @@ export default function ApprovalTable({
   };
 
   const confirmRequestChanges = async (reason: string) => {
-    const result = await requestChanges(categoryKey as any, rejectionModal.itemId, reason);
+    const result = await requestChanges(
+      categoryKey,
+      rejectionModal.itemId,
+      reason
+    );
     if (result.success && onItemsUpdated) {
       onItemsUpdated();
     }
     setRejectionModal({ isOpen: false, itemId: 0 });
   };
+
+  const isBriefItem = (item: ApprovalItem): item is BriefApprovalItem =>
+    "type" in item;
+  const isArticleItem = (item: ApprovalItem): item is ArticleApprovalItem =>
+    "wordCount" in item;
+  const isKeywordItem = (item: ApprovalItem): item is KeywordApprovalItem =>
+    "volume" in item;
+  const isBacklinkItem = (item: ApprovalItem): item is BacklinkApprovalItem =>
+    "count" in item;
+  const isQuickWinItem = (item: ApprovalItem): item is QuickWinApprovalItem =>
+    "pages" in item;
 
   return (
     <>
@@ -41,11 +65,21 @@ export default function ApprovalTable({
         <table className="min-w-full divide-y divide-lightGray">
           <thead>
             <tr className="bg-lightGray">
-              <th className="px-4 py-3 text-left text-xs font-medium text-mediumGray uppercase tracking-wider">Deliverable</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-mediumGray uppercase tracking-wider">Strategist</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-mediumGray uppercase tracking-wider">Last Updated</th>
-              <th className="px-4 py-3 text-left text-xs font-medium text-mediumGray uppercase tracking-wider">Status</th>
-              <th className="px-4 py-3 text-right text-xs font-medium text-mediumGray uppercase tracking-wider">Actions</th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-mediumGray uppercase tracking-wider">
+                Deliverable
+              </th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-mediumGray uppercase tracking-wider">
+                Strategist
+              </th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-mediumGray uppercase tracking-wider">
+                Last Updated
+              </th>
+              <th className="px-4 py-3 text-left text-xs font-medium text-mediumGray uppercase tracking-wider">
+                Status
+              </th>
+              <th className="px-4 py-3 text-right text-xs font-medium text-mediumGray uppercase tracking-wider">
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-lightGray">
@@ -54,12 +88,34 @@ export default function ApprovalTable({
                 <td className="px-4 py-3 whitespace-nowrap">
                   <div className="flex items-start">
                     <div>
-                      <div className="text-sm font-medium text-dark">{item.item}</div>
-                      {'type' in item && <div className="text-xs text-mediumGray">{item.type}</div>}
-                      {'wordCount' in item && <div className="text-xs text-mediumGray">{item.wordCount} words</div>}
-                      {'volume' in item && <div className="text-xs text-mediumGray">Volume: {item.volume}</div>}
-                      {'count' in item && <div className="text-xs text-mediumGray">{item.count} links</div>}
-                      {'pages' in item && <div className="text-xs text-mediumGray">{item.pages} pages</div>}
+                      <div className="text-sm font-medium text-dark">
+                        {item.item}
+                      </div>
+                      {isBriefItem(item) && (
+                        <div className="text-xs text-mediumGray">
+                          {item.type}
+                        </div>
+                      )}
+                      {isArticleItem(item) && (
+                        <div className="text-xs text-mediumGray">
+                          {item.wordCount} words
+                        </div>
+                      )}
+                      {isKeywordItem(item) && (
+                        <div className="text-xs text-mediumGray">
+                          Volume: {item.volume}
+                        </div>
+                      )}
+                      {isBacklinkItem(item) && (
+                        <div className="text-xs text-mediumGray">
+                          {item.count} links
+                        </div>
+                      )}
+                      {isQuickWinItem(item) && (
+                        <div className="text-xs text-mediumGray">
+                          {item.pages} pages
+                        </div>
+                      )}
                     </div>
                   </div>
                 </td>
@@ -67,13 +123,17 @@ export default function ApprovalTable({
                   <div className="text-sm text-dark">{item.strategist}</div>
                 </td>
                 <td className="px-4 py-3 whitespace-nowrap">
-                  <div className="text-sm text-mediumGray">{item.lastUpdated}</div>
+                  <div className="text-sm text-mediumGray">
+                    {item.lastUpdated}
+                  </div>
                 </td>
                 <td className="px-4 py-3 whitespace-nowrap">
                   <StatusBadge status={item.status} />
                 </td>
                 <td className="px-4 py-3 whitespace-nowrap text-right">
-                  {(item.status === 'awaiting_approval' || item.status === 'resubmitted' || item.status === 'needs_revision') && (
+                  {(item.status === "awaiting_approval" ||
+                    item.status === "resubmitted" ||
+                    item.status === "needs_revision") && (
                     <div className="flex justify-end space-x-2">
                       <button
                         onClick={() => handleApprove(item.id)}

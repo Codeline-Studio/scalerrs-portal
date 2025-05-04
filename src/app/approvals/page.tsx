@@ -15,11 +15,11 @@ import { TabItem } from './components/tab-navigation-client';
 
 type ApprovalTabName = 'keywords' | 'briefs' | 'articles' | 'backlinks' | 'quickwins';
 
-export default async function ApprovalsPage({
+const ApprovalsPage = async ({
   searchParams,
 }: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-}) {
+}) => {
   // Get the active tab from the URL parameters, defaulting to 'briefs'
   const resolvedSearchParams = await searchParams;
   const activeTab = ((resolvedSearchParams?.tab as string) || 'briefs') as ApprovalTabName;
@@ -84,4 +84,6 @@ export default async function ApprovalsPage({
       </div>
     </DashboardLayout>
   );
-}
+};
+
+export default ApprovalsPage;

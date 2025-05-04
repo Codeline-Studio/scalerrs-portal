@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams } from 'next/navigation';
 
-interface GlobalSummaryBannerProps {
+type GlobalSummaryBannerProps = {
   counts: {
     keywords: number;
     briefs: number;
@@ -10,9 +10,9 @@ interface GlobalSummaryBannerProps {
     backlinks: number;
     quickwins: number;
   };
-}
+};
 
-export default function GlobalSummaryBanner({ counts }: GlobalSummaryBannerProps) {
+const GlobalSummaryBanner = ({ counts }: GlobalSummaryBannerProps) => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -76,4 +76,6 @@ export default function GlobalSummaryBanner({ counts }: GlobalSummaryBannerProps
       </div>
     </div>
   );
-}
+};
+
+export default GlobalSummaryBanner;

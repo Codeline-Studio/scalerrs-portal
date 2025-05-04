@@ -1,9 +1,6 @@
-// Server component for displaying summary in the sidebar
-export default function SidebarSummaryPanel({
-  counts,
-  totalApproved,
-  totalPending
-}: {
+'use client';
+
+type SidebarSummaryPanelProps = {
   counts: {
     keywords: number;
     briefs: number;
@@ -13,7 +10,9 @@ export default function SidebarSummaryPanel({
   };
   totalApproved: number;
   totalPending: number;
-}) {
+};
+
+const SidebarSummaryPanel = ({ counts, totalApproved, totalPending }: SidebarSummaryPanelProps) => {
   // Calculate the percentage for the progress circle
   const percentage = totalPending > 0 ? (totalApproved / (totalApproved + totalPending)) * 100 : 0;
   const dashOffset = 283 - (283 * percentage / 100);
@@ -74,4 +73,6 @@ export default function SidebarSummaryPanel({
       </div>
     </div>
   );
-}
+};
+
+export default SidebarSummaryPanel;

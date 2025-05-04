@@ -8,15 +8,12 @@ export type TabItem = {
   label: string;
 };
 
-interface TabNavigationClientProps {
+type TabNavigationClientProps = {
   tabs: TabItem[];
   activeTab: string;
-}
+};
 
-export default function TabNavigationClient({
-  tabs,
-  activeTab
-}: TabNavigationClientProps) {
+const TabNavigationClient = ({ tabs, activeTab }: TabNavigationClientProps) => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -38,4 +35,6 @@ export default function TabNavigationClient({
       containerClassName="overflow-x-auto"
     />
   );
-}
+};
+
+export default TabNavigationClient;
