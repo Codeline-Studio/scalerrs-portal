@@ -34,6 +34,7 @@ import {
   mockKeywordPerformance,
   mockMonthlyProjections,
 } from '@/lib/mock-data'
+import { Button } from '@/components/ui/button'
 
 // Chart colors
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042']
@@ -181,7 +182,13 @@ const kpiData = {
         conversionRate: 2.6,
         leads: 127,
       },
-      { stage: 'BoFU', pages: 5, traffic: 2100, conversionRate: 4.1, leads: 86 },
+      {
+        stage: 'BoFU',
+        pages: 5,
+        traffic: 2100,
+        conversionRate: 4.1,
+        leads: 86,
+      },
     ],
     performers: {
       top: [
@@ -675,7 +682,7 @@ function KpiDashboard () {
   }
 
   return (
-    <DashboardLayout>
+    <>
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-dark">KPI Dashboard</h1>
         <p className="text-mediumGray">Visualise performance against strategic
@@ -1581,7 +1588,7 @@ function KpiDashboard () {
           </PageContainer>
         </>
       )}
-    </DashboardLayout>
+    </>
   )
 }
 

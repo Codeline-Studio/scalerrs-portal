@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import DashboardLayout from '@/components/DashboardLayout'
+
 import { ChevronDown } from 'lucide-react'
 import {
   BarChart,
@@ -25,6 +25,7 @@ import PageContainer, {
   PageContainerBody,
   PageContainerTabs,
 } from '@/components/ui/layout/PageContainer'
+import { Button } from '@/components/ui/button'
 
 // Sample report data
 const reports = {
@@ -586,7 +587,7 @@ export default function Reports () {
   }
 
   return (
-    <DashboardLayout>
+    <>
       {selectedReport ? (
         <div>
           <Button
@@ -1388,6 +1389,6 @@ export default function Reports () {
           </div>
         </>
       )}
-    </DashboardLayout>
+    </>
   )
 }

@@ -2,8 +2,8 @@
 
 import React, { useState } from 'react'
 import { Modal } from '@/components/ui/modals'
-import { Input } from '@/components/ui/forms'
-import { Button } from '@/components/ui/forms'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
 
 type AccessItem = {
   id: number;
@@ -110,7 +110,6 @@ export default function ChangePasswordModal ({
           </div>
 
           <Input
-            label="Confirm Password"
             type={showPassword ? 'text' : 'password'}
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
@@ -132,7 +131,7 @@ export default function ChangePasswordModal ({
           </Button>
           <Button
             type="submit"
-            variant="primary"
+
           >
             Update Password
           </Button>

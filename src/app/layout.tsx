@@ -42,7 +42,10 @@ export default async function RootLayout ({
       className="bg-white text-text-light blue-glow-top-left blue-glow-bottom-right"
     >
     <AppProvider>
-      <DashboardLayout user={user}>{children}</DashboardLayout>
+
+      {user
+        ? <DashboardLayout user={user}>{children}</DashboardLayout>
+        : <div>{children}</div>}
 
     </AppProvider>
 

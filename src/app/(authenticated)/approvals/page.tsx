@@ -10,6 +10,7 @@ import PageContainer, {
   PageContainerBody,
   PageContainerTabs,
 } from '@/components/ui/layout/PageContainer'
+import { Button } from '@/components/ui/button'
 
 // Sample approval data
 const approvalItems = {
@@ -731,7 +732,7 @@ export default function Approvals () {
   }
 
   return (
-    <DashboardLayout>
+    <>
       <div className="mb-8">
         <h1 className="text-2xl font-bold text-dark">Approvals</h1>
         <p className="text-mediumGray">Review and approve deliverables</p>
@@ -818,6 +819,6 @@ export default function Approvals () {
         onClose={() => setRejectionModal({ isOpen: false, itemId: 0 })}
         onConfirm={confirmRequestChanges}
       />
-    </DashboardLayout>
+    </>
   )
 }

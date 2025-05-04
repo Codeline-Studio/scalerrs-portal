@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
-import DashboardLayout from '@/components/DashboardLayout'
+
 import TabNavigation, {
   TabContent,
 } from '@/components/ui/navigation/TabNavigation'
@@ -30,6 +30,7 @@ import {
   mapAirtableTaskToTask,
   TaskComment,
 } from '@/types/task'
+import { Button } from '@/components/ui/button'
 
 // Define Comment type for this page
 type Comment = {
@@ -1394,7 +1395,7 @@ export default function TaskBoards () {
   const currentTasks = boards[activeBoard as keyof typeof boards]
 
   return (
-    <DashboardLayout>
+    <>
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-2xl font-bold text-dark">Tasks</h1>
@@ -1475,6 +1476,6 @@ export default function TaskBoards () {
           ? 'Technical SEO'
           : activeBoard === 'cro' ? 'CRO' : 'Strategy / Ad Hoc'}
       />
-    </DashboardLayout>
+    </>
   )
 }

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import DashboardLayout from '@/components/DashboardLayout'
-import { useAuth } from '@/context/AuthContext'
+
 import {
   fetchTasks,
   fetchBriefs,
@@ -21,6 +21,7 @@ import {
   URLPerformance,
   KeywordPerformance,
 } from '@/types'
+import { Button } from '@/components/ui/button'
 
 export default function AirtableIntegrationDemo () {
   const { user } = useAuth()
@@ -264,7 +265,7 @@ export default function AirtableIntegrationDemo () {
   }
 
   return (
-    <DashboardLayout>
+    <>
       <div className="container mx-auto py-8">
         <h1 className="text-2xl font-bold mb-6">Airtable Integration Demo</h1>
 
@@ -331,6 +332,6 @@ export default function AirtableIntegrationDemo () {
         {/* Data display */}
         {renderData()}
       </div>
-    </DashboardLayout>
+    </>
   )
 }

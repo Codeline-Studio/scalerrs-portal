@@ -2,9 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import DashboardLayout from '@/components/DashboardLayout'
-import { useAuth } from '@/context/AuthContext'
-import Input from '@/components/ui/forms/Input'
-import Button from '@/components/ui/forms/Button'
+
 import {
   fetchTasks,
   fetchComments,
@@ -12,6 +10,8 @@ import {
   addComment as addTaskComment,
 } from '@/lib/client-api'
 import { mockTasks, mockComments } from '@/lib/mock-data'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 
 interface Task {
   id: string;
@@ -196,7 +196,7 @@ export default function AirtableDemoPage () {
   }
 
   return (
-    <DashboardLayout>
+    <>
       <div className="container mx-auto py-6 px-4">
         <div className="flex justify-between items-center mb-6">
           <div className="flex items-center">
@@ -515,6 +515,6 @@ export default function AirtableDemoPage () {
           </div>
         )}
       </div>
-    </DashboardLayout>
+    </>
   )
 }

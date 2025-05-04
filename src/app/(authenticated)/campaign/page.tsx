@@ -1,11 +1,11 @@
 'use client'
 
-import DashboardLayout from '@/components/DashboardLayout'
+import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 
 export default function CampaignPage () {
   return (
-    <DashboardLayout>
+    <>
       <div className="mb-6">
         <Link href="/home"
               className="flex items-center text-primary mb-4 hover:underline">
@@ -154,6 +154,6 @@ export default function CampaignPage () {
           </div>
         </div>
       </div>
-    </DashboardLayout>
+    </>
   )
 }

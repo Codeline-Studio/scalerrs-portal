@@ -11,6 +11,7 @@ import {
 } from '@/lib/client-api'
 import { BriefBoard, ArticleBoard } from '@/components/kanban/KanbanBoard'
 import { BriefStatus, ArticleStatus } from '@/types'
+import { Button } from '@/components/ui/button'
 
 // Define types for tabs
 type MainTab = 'content' | 'backlinks';
@@ -357,7 +358,9 @@ export default function DeliverablePage () {
       // Update the local state
       setArticles(prevArticles =>
         prevArticles.map(article =>
-          article.id === articleId ? { ...article, Status: newStatus } : article,
+          article.id === articleId
+            ? { ...article, Status: newStatus }
+            : article,
         ),
       )
 
@@ -373,7 +376,9 @@ export default function DeliverablePage () {
       // Update the local state anyway to provide a good user experience
       setArticles(prevArticles =>
         prevArticles.map(article =>
-          article.id === articleId ? { ...article, Status: newStatus } : article,
+          article.id === articleId
+            ? { ...article, Status: newStatus }
+            : article,
         ),
       )
 

@@ -1,7 +1,7 @@
 'use client'
 
+import { Button } from '@/components/ui/button'
 import { useState } from 'react'
-import DashboardLayout from '@/components/DashboardLayout'
 
 // Sample content workflow data
 const contentItems = [
@@ -357,7 +357,7 @@ export default function ContentWorkflow () {
     : null
 
   return (
-    <DashboardLayout>
+    <>
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-dark">Content Workflow</h1>
         <p className="text-mediumGray">Track content from brief to publication
@@ -427,6 +427,6 @@ export default function ContentWorkflow () {
         item={selectedItem}
         onClose={handleCloseDetail}
       />
-    </DashboardLayout>
+    </>
   )
 }

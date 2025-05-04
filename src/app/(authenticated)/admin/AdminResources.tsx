@@ -1,10 +1,12 @@
-'use client';
+'use client'
 
-import React, { useState } from 'react';
-import { DocumentCard, Document } from '@/components/ui/cards';
-import { Button, Input } from '@/components/ui/forms';
-import { Badge } from '@/components/ui/badges';
-import { Modal } from '@/components/ui/modals';
+import React, { useState } from 'react'
+import { DocumentCard, Document } from '@/components/ui/cards'
+
+import { Badge } from '@/components/ui/badges'
+import { Modal } from '@/components/ui/modals'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 
 type ResourceDocument = Document & {
   uploadedBy: string;
@@ -18,39 +20,42 @@ type AdminResourcesProps = {
   onDownload?: (id: number) => void;
 };
 
-export default function AdminResources({
+export default function AdminResources ({
   resources,
   onUpload,
   onView,
-  onDownload
+  onDownload,
 }: AdminResourcesProps) {
-  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false)
   const [newResource, setNewResource] = useState({
     name: '',
     type: '',
-    size: '0 KB'
-  });
+    size: '0 KB',
+  })
 
   const handleUpload = () => {
-    onUpload(newResource);
-    setNewResource({ name: '', type: '', size: '0 KB' });
-    setIsUploadModalOpen(false);
-  };
+    onUpload(newResource)
+    setNewResource({ name: '', type: '', size: '0 KB' })
+    setIsUploadModalOpen(false)
+  }
 
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
         <div>
           <h2 className="text-lg font-medium text-dark">Resources</h2>
-          <p className="text-sm text-mediumGray">Shared files that support content production, tone, branding, and collaboration</p>
+          <p className="text-sm text-mediumGray">Shared files that support
+            content production, tone, branding, and collaboration</p>
         </div>
         <Button
-          variant="primary"
+
           onClick={() => setIsUploadModalOpen(true)}
           className="flex items-center"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1"
+               fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                  d="M12 4v16m8-8H4"/>
           </svg>
           Upload Resource
         </Button>
@@ -65,10 +70,13 @@ export default function AdminResources({
             onDownload={onDownload}
           >
             <div className="flex justify-between items-center mt-2">
-              <Badge variant="light" className={`text-xs ${resource.editable ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-600'}`}>
+              <Badge variant="light" className={`text-xs ${resource.editable
+                ? 'bg-green-100 text-green-800'
+                : 'bg-gray-100 text-gray-600'}`}>
                 {resource.editable ? 'Editable' : 'View Only'}
               </Badge>
-              <Badge variant="light" className="text-xs bg-gray-100 text-gray-600">
+              <Badge variant="light"
+                     className="text-xs bg-gray-100 text-gray-600">
                 Uploaded by {resource.uploadedBy}
               </Badge>
             </div>
@@ -84,22 +92,28 @@ export default function AdminResources({
       >
         <div className="space-y-4">
           <div>
-            <label htmlFor="name" className="block text-sm font-medium text-mediumGray mb-1">Resource Name</label>
+            <label htmlFor="name"
+                   className="block text-sm font-medium text-mediumGray mb-1">Resource
+              Name</label>
             <Input
               id="name"
               value={newResource.name}
-              onChange={(e) => setNewResource({...newResource, name: e.target.value})}
+              onChange={(e) => setNewResource(
+                { ...newResource, name: e.target.value })}
               placeholder="e.g., Brand Guidelines, Tone of Voice Guide"
               className="w-full"
             />
           </div>
 
           <div>
-            <label htmlFor="type" className="block text-sm font-medium text-mediumGray mb-1">File Type</label>
+            <label htmlFor="type"
+                   className="block text-sm font-medium text-mediumGray mb-1">File
+              Type</label>
             <select
               id="type"
               value={newResource.type}
-              onChange={(e) => setNewResource({...newResource, type: e.target.value})}
+              onChange={(e) => setNewResource(
+                { ...newResource, type: e.target.value })}
               className="block w-full px-3 py-2 border border-lightGray rounded-scalerrs shadow-sm focus:outline-none focus:ring-primary focus:border-primary text-sm"
             >
               <option value="">Select file type</option>
@@ -115,16 +129,26 @@ export default function AdminResources({
           </div>
 
           <div>
-            <label htmlFor="file" className="block text-sm font-medium text-mediumGray mb-1">Upload File</label>
-            <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-lightGray border-dashed rounded-scalerrs">
+            <label htmlFor="file"
+                   className="block text-sm font-medium text-mediumGray mb-1">Upload
+              File</label>
+            <div
+              className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-lightGray border-dashed rounded-scalerrs">
               <div className="space-y-1 text-center">
-                <svg className="mx-auto h-12 w-12 text-mediumGray" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
-                  <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                <svg className="mx-auto h-12 w-12 text-mediumGray"
+                     stroke="currentColor" fill="none" viewBox="0 0 48 48"
+                     aria-hidden="true">
+                  <path
+                    d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02"
+                    strokeWidth="2" strokeLinecap="round"
+                    strokeLinejoin="round"/>
                 </svg>
                 <div className="flex text-sm text-mediumGray">
-                  <label htmlFor="file-upload" className="relative cursor-pointer rounded-md font-medium text-primary hover:text-primary/80">
+                  <label htmlFor="file-upload"
+                         className="relative cursor-pointer rounded-md font-medium text-primary hover:text-primary/80">
                     <span>Upload a file</span>
-                    <input id="file-upload" name="file-upload" type="file" className="sr-only" />
+                    <input id="file-upload" name="file-upload" type="file"
+                           className="sr-only"/>
                   </label>
                   <p className="pl-1">or drag and drop</p>
                 </div>
@@ -143,7 +167,6 @@ export default function AdminResources({
               Cancel
             </Button>
             <Button
-              variant="primary"
               onClick={handleUpload}
               disabled={!newResource.name || !newResource.type}
             >
@@ -153,5 +176,5 @@ export default function AdminResources({
         </div>
       </Modal>
     </div>
-  );
+  )
 }
